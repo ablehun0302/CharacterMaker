@@ -1,0 +1,37 @@
+﻿// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Kismet/BlueprintFunctionLibrary.h"
+#include "DataLibrary.generated.h"
+
+USTRUCT(Atomic, BlueprintType)
+struct FCharacterStats
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Health;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Mana;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Attack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MoveSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float JumpForce;
+
+	FCharacterStats& operator+(FCharacterStats OtherStats);
+};
+
+UCLASS()
+class CHARACTERMAKER_API UDataLibrary : public UBlueprintFunctionLibrary
+{
+	GENERATED_BODY()
+public:
+	UDataLibrary();
+
+	UFUNCTION(BlueprintPure, meta = (DisplayName = "Add Character Stats", CompactNodeTitle = "+"), Category = "Math|DataLibrary")
+	static FCharacterStats AddCharacterStats(FCharacterStats A, FCharacterStats B);
+};
