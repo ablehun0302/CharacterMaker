@@ -25,6 +25,17 @@ public:
 	FCharacterStats& operator+(FCharacterStats OtherStats);
 };
 
+USTRUCT(Atomic, BlueprintType)
+struct FSkillInfo
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName Name;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (MustImplement = "/Script/Engine.Blueprint'/Game/Blueprints/Skills/I_Skill.I_Skill'"))
+	TSubclassOf<UObject> Skill;
+};
+
 UCLASS()
 class CHARACTERMAKER_API UDataLibrary : public UBlueprintFunctionLibrary
 {
