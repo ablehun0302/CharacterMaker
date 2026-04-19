@@ -13,13 +13,13 @@ FCharacterStats& FCharacterStats::operator+(FCharacterStats OtherStats)
 
 	return *this;
 }
+FCharacterStats UDataLibrary::AddCharacterStats(FCharacterStats A, FCharacterStats B)
+{
+	return A + B;
+}
 
 UDataLibrary::UDataLibrary()
 {
 }
 
-FCharacterStats UDataLibrary::AddCharacterStats(FCharacterStats A, FCharacterStats B)
-{
-	return A + B;
-}
 

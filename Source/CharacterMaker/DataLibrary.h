@@ -32,6 +32,6 @@ class CHARACTERMAKER_API UDataLibrary : public UBlueprintFunctionLibrary
 public:
 	UDataLibrary();
 
-	UFUNCTION(BlueprintPure, meta = (DisplayName = "Add Character Stats", CompactNodeTitle = "+"), Category = "Math|DataLibrary")
+	UFUNCTION(BlueprintPure, meta = (DisplayName = "Add Character Stats", CompactNodeTitle = "+", Keywords = "+ add plus", ScriptMethod, ScriptMethodSelfReturn, ScriptOperator = "+;+="), Category = "Math|Data Library")
 	static FCharacterStats AddCharacterStats(FCharacterStats A, FCharacterStats B);
 };
