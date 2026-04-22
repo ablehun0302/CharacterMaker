@@ -32,7 +32,7 @@ struct FSkillInfo
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName Name;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (MustImplement = "/Script/Engine.Blueprint'/Game/Blueprints/Skills/I_Skill.I_Skill'"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UObject> Skill;
 };
 
