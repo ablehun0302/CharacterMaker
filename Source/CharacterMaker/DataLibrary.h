@@ -31,9 +31,13 @@ struct FSkillInfo
 	GENERATED_USTRUCT_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName Name;
+	FName SkillID;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UObject> Skill;
+	FText SkillName;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString Description;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CoolTime;
 };
 
 UCLASS()
