@@ -20,4 +20,5 @@ FCharacterStats UDataLibrary::AddCharacterStats(FCharacterStats A, FCharacterSta
 
 UDataLibrary::UDataLibrary()
 {
+
 }

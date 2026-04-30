@@ -6,6 +6,8 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "DataLibrary.generated.h"
 
+class UNiagaraSystem;
+
 USTRUCT(Atomic, BlueprintType)
 struct FCharacterStats
 {
@@ -61,7 +63,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float BulletRadius;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Range;
+	float Speed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float LifeSpan;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float GravityScale;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UNiagaraSystem> BulletParticle;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UNiagaraSystem> HitParticle;
 };
 
 USTRUCT(Atomic, BlueprintType)
