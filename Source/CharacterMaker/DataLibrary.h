@@ -51,6 +51,8 @@ public:
 	float Radius;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float EffectValue;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UNiagaraSystem> EffectParticle;
 };
 
 USTRUCT(BlueprintType)
