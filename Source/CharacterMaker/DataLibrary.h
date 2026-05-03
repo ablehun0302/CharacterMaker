@@ -7,6 +7,7 @@
 #include "DataLibrary.generated.h"
 
 class UNiagaraSystem;
+class UTexture2D;
 
 USTRUCT(Atomic, BlueprintType)
 struct FCharacterStats
@@ -38,6 +39,8 @@ public:
 	FString Description;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CoolTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UTexture2D> SkillImage;
 };
 
 USTRUCT(BlueprintType)
