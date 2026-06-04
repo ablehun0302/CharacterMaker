@@ -11,6 +11,5 @@ FPrimaryAssetId UBaseSkillPDA::GetPrimaryAssetId() const
 
 void UBaseSkillPDA::ProcessSkill()
 {
-	FString NameString = SkillInfo.SkillName.ToString();
-	UE_LOG(LogTemp, Display, TEXT("Skill Name: %s"), *NameString);
+	
 }
