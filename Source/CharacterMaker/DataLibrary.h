@@ -80,21 +80,6 @@ public:
 };
 
 USTRUCT(Atomic, BlueprintType)
-struct FSkillInfo
-{
-	GENERATED_USTRUCT_BODY()
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName SkillID;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText SkillName;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString Description;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float CoolTime;
-};
-
-USTRUCT(Atomic, BlueprintType)
 struct FAOESkillInfo
 {
 	GENERATED_USTRUCT_BODY()
