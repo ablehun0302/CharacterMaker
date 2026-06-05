@@ -5,7 +5,7 @@
 
 FPrimaryAssetId UBaseSkillPDA::GetPrimaryAssetId() const
 {
-	Super::GetPrimaryAssetId();
+	//Super::GetPrimaryAssetId();
 	return FPrimaryAssetId(AssetType, GetFName());
 }
 
