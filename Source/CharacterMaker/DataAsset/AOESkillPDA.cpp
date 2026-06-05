@@ -3,9 +3,9 @@
 
 #include "AOESkillPDA.h"
 
-void UAOESkillPDA::ProcessSkill()
+void UAOESkillPDA::ProcessSkill(APawn* Caster)
 {
-	Super::ProcessSkill();
+	Super::ProcessSkill(Caster);
 
 	FString NameString = SkillInfo.SkillName.ToString();
 	UE_LOG(LogTemp, Display, TEXT("AOE Skill Name: %s, Radius: %f"), *NameString, Radius);

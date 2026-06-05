@@ -9,7 +9,14 @@ FPrimaryAssetId UBaseSkillPDA::GetPrimaryAssetId() const
 	return FPrimaryAssetId(AssetType, GetFName());
 }
 
-void UBaseSkillPDA::ProcessSkill()
+void UBaseSkillPDA::ProcessSkill(APawn* Caster)
 {
-	
+	if (Caster == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Pawn Null"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Pawn Location: %s"), *(Caster->GetActorLocation().ToString()));
+	}
 }

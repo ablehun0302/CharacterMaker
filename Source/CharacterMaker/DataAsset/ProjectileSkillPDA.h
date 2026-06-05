@@ -15,7 +15,7 @@ class CHARACTERMAKER_API UProjectileSkillPDA : public UBaseSkillPDA
 {
 	GENERATED_BODY()
 public:
-	virtual void ProcessSkill() override;
+	virtual void ProcessSkill(APawn* Caster) override;
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data")
 	float BulletRadius;
