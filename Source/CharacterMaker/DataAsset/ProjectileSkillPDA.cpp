@@ -2,11 +2,21 @@
 
 
 #include "ProjectileSkillPDA.h"
+#include "Components/ArrowComponent.h"
+#include "../Base/Human.h"
 
 void UProjectileSkillPDA::ProcessSkill(APawn* Caster)
 {
 	Super::ProcessSkill(Caster);
 
-	FString NameString = SkillInfo.SkillName.ToString();
-	UE_LOG(LogTemp, Display, TEXT("Projectile Skill Name: %s, BulletRadius: %f"), *NameString, BulletRadius);
+	if (Caster == nullptr)
+	{
+		return;
+	}
+
+	AHuman* Character = Cast<AHuman>(Caster);
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = Caster;
+	Caster->GetWorld()->SpawnActor<AActor>(BulletActorClass, Character->GetProjectileSpawnPoint()->GetComponentTransform(), SpawnParams);
 }

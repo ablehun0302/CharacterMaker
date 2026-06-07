@@ -17,6 +17,9 @@ class CHARACTERMAKER_API UProjectileSkillPDA : public UBaseSkillPDA
 public:
 	virtual void ProcessSkill(APawn* Caster) override;
 public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
+	TSubclassOf<AActor> BulletActorClass;
+public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data")
 	float BulletRadius;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data")
@@ -25,6 +28,7 @@ public:
 	float LifeSpan;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data")
 	float GravityScale;
+public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual")
 	TObjectPtr<UNiagaraSystem> BulletParticle;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual")
