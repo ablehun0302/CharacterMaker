@@ -3,10 +3,14 @@
 
 #include "AOESkillPDA.h"
 
-void UAOESkillPDA::ProcessSkill(APawn* Caster)
+void UAOESkillPDA::SpawnVisualEffect(APawn* Caster)
 {
-	Super::ProcessSkill(Caster);
+	Super::SpawnVisualEffect(Caster);
 
-	FString NameString = SkillInfo.SkillName.ToString();
-	UE_LOG(LogTemp, Display, TEXT("AOE Skill Name: %s, Radius: %f"), *NameString, Radius);
+	if (Caster == nullptr)
+	{
+		return;
+	}
+
+	
 }

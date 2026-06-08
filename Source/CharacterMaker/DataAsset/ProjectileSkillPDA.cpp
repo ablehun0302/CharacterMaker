@@ -3,11 +3,12 @@
 
 #include "ProjectileSkillPDA.h"
 #include "Components/ArrowComponent.h"
-#include "../Base/Human.h"
+#include "CharacterMaker/Base/Human.h"
+#include "CharacterMaker/Base/Projectile.h"
 
-void UProjectileSkillPDA::ProcessSkill(APawn* Caster)
+void UProjectileSkillPDA::SpawnVisualEffect(APawn* Caster)
 {
-	Super::ProcessSkill(Caster);
+	Super::SpawnVisualEffect(Caster);
 
 	if (Caster == nullptr)
 	{
@@ -16,7 +17,24 @@ void UProjectileSkillPDA::ProcessSkill(APawn* Caster)
 
 	AHuman* Character = Cast<AHuman>(Caster);
 
+	// 투사체 생성 보류
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = Caster;
-	Caster->GetWorld()->SpawnActor<AActor>(BulletActorClass, Character->GetProjectileSpawnPoint()->GetComponentTransform(), SpawnParams);
+	auto SpawnedActor = Caster->GetWorld()->SpawnActorDeferred<AProjectile>(
+		BulletActorClass,
+		Character->GetProjectileSpawnPoint()->GetComponentTransform(),
+		Caster,
+		Caster
+	);
+
+	// 투사체 속성 초기화
+	if (SpawnedActor == nullptr)
+	{
+		return;
+	}
+	SpawnedActor->InitProjectile(BulletRadius, Speed, LifeSpan, GravityScale, BulletParticle);
+
+	// 투사체 최종 생성
+	SpawnedActor->FinishSpawning(Character->GetProjectileSpawnPoint()->GetComponentTransform());
+
 }

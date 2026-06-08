@@ -7,6 +7,7 @@
 #include "ProjectileSkillPDA.generated.h"
 
 class UNiagaraSystem;
+class AProjectile;
 /**
  * 
  */
@@ -15,10 +16,10 @@ class CHARACTERMAKER_API UProjectileSkillPDA : public UBaseSkillPDA
 {
 	GENERATED_BODY()
 public:
-	virtual void ProcessSkill(APawn* Caster) override;
+	virtual void SpawnVisualEffect(APawn* Caster) override;
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
-	TSubclassOf<AActor> BulletActorClass;
+	TSubclassOf<AProjectile> BulletActorClass;
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data")
 	float BulletRadius;

@@ -33,7 +33,7 @@ public:
 	virtual FPrimaryAssetId GetPrimaryAssetId() const override;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void ProcessSkill(APawn* Caster);
+	virtual void SpawnVisualEffect(APawn* Caster);
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data")

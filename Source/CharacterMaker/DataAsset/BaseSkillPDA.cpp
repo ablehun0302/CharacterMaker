@@ -9,7 +9,7 @@ FPrimaryAssetId UBaseSkillPDA::GetPrimaryAssetId() const
 	return FPrimaryAssetId(AssetType, GetFName());
 }
 
-void UBaseSkillPDA::ProcessSkill(APawn* Caster)
+void UBaseSkillPDA::SpawnVisualEffect(APawn* Caster)
 {
 	if (Caster == nullptr)
 	{
