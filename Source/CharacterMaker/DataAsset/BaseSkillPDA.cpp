@@ -9,14 +9,23 @@ FPrimaryAssetId UBaseSkillPDA::GetPrimaryAssetId() const
 	return FPrimaryAssetId(AssetType, GetFName());
 }
 
-void UBaseSkillPDA::SpawnVisualEffect(APawn* Caster)
+bool UBaseSkillPDA::ExecuteSkillServer(APawn* Caster)
+{
+	if (Caster == nullptr)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool UBaseSkillPDA::SpawnVisualEffect(APawn* Caster)
 {
 	if (Caster == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Pawn Null"));
+		return false;
 	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Pawn Location: %s"), *(Caster->GetActorLocation().ToString()));
-	}
+	UE_LOG(LogTemp, Warning, TEXT("Pawn Location: %s"), *(Caster->GetActorLocation().ToString()));
+	return true;
 }

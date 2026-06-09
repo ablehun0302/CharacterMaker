@@ -15,7 +15,9 @@ class CHARACTERMAKER_API UAOESkillPDA : public UBaseSkillPDA
 {
 	GENERATED_BODY()
 public:
-	virtual void SpawnVisualEffect(APawn* Caster) override;
+	virtual bool ExecuteSkillServer(APawn* Caster) override;
+
+	virtual bool SpawnVisualEffect(APawn* Caster) override;
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data")
 	float Radius;

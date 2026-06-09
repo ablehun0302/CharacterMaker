@@ -33,7 +33,10 @@ public:
 	virtual FPrimaryAssetId GetPrimaryAssetId() const override;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void SpawnVisualEffect(APawn* Caster);
+	virtual bool ExecuteSkillServer(APawn* Caster);
+
+	UFUNCTION(BlueprintCallable)
+	virtual bool SpawnVisualEffect(APawn* Caster);
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data")

@@ -6,13 +6,11 @@
 #include "CharacterMaker/Base/Human.h"
 #include "CharacterMaker/Base/Projectile.h"
 
-void UProjectileSkillPDA::SpawnVisualEffect(APawn* Caster)
+bool UProjectileSkillPDA::SpawnVisualEffect(APawn* Caster)
 {
-	Super::SpawnVisualEffect(Caster);
-
-	if (Caster == nullptr)
+	if (!Super::SpawnVisualEffect(Caster))
 	{
-		return;
+		return false;
 	}
 
 	AHuman* Character = Cast<AHuman>(Caster);
@@ -30,11 +28,12 @@ void UProjectileSkillPDA::SpawnVisualEffect(APawn* Caster)
 	// 투사체 속성 초기화
 	if (SpawnedActor == nullptr)
 	{
-		return;
+		return false;
 	}
 	SpawnedActor->InitProjectile(BulletRadius, Speed, LifeSpan, GravityScale, BulletParticle);
 
 	// 투사체 최종 생성
 	SpawnedActor->FinishSpawning(Character->GetProjectileSpawnPoint()->GetComponentTransform());
 
+	return true;
 }
