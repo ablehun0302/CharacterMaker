@@ -6,6 +6,11 @@
 #include "CharacterMaker/Base/Human.h"
 #include "CharacterMaker/Base/Projectile.h"
 
+UProjectileSkillPDA::UProjectileSkillPDA()
+{
+	SkillInfo.SkillType = ESkillType::Projectile;
+}
+
 bool UProjectileSkillPDA::SpawnVisualEffect(APawn* Caster)
 {
 	if (!Super::SpawnVisualEffect(Caster))

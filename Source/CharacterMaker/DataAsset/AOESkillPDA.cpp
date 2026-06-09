@@ -8,6 +8,11 @@
 #include "Components/CapsuleComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 
+UAOESkillPDA::UAOESkillPDA()
+{
+	SkillInfo.SkillType = ESkillType::AreaOfEffect;
+}
+
 bool UAOESkillPDA::ExecuteSkillServer(APawn* Caster)
 {
 	if (!Super::ExecuteSkillServer(Caster))

@@ -16,6 +16,7 @@ class CHARACTERMAKER_API UProjectileSkillPDA : public UBaseSkillPDA
 {
 	GENERATED_BODY()
 public:
+	UProjectileSkillPDA();
 	virtual bool SpawnVisualEffect(APawn* Caster) override;
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")

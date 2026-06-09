@@ -6,6 +6,13 @@
 #include "Engine/DataAsset.h"
 #include "BaseSkillPDA.generated.h"
 
+UENUM(BlueprintType)
+enum class ESkillType : uint8
+{
+	AreaOfEffect	UMETA(DisplayName = "AOE Skill"),
+	Projectile		UMETA(DisplayName = "Projectile Skill")
+};
+
 USTRUCT(BlueprintType)
 struct FSkillInfo
 {
@@ -15,6 +22,8 @@ public:
 	FName SkillID;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText SkillName;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ESkillType SkillType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Description;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

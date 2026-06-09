@@ -15,6 +15,7 @@ class CHARACTERMAKER_API UAOESkillPDA : public UBaseSkillPDA
 {
 	GENERATED_BODY()
 public:
+	UAOESkillPDA();
 	virtual bool ExecuteSkillServer(APawn* Caster) override;
 
 	virtual bool SpawnVisualEffect(APawn* Caster) override;
