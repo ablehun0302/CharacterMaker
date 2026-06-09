@@ -13,9 +13,24 @@ FCharacterStats& FCharacterStats::operator+(FCharacterStats OtherStats)
 
 	return *this;
 }
+FCharacterStats& FCharacterStats::operator-(FCharacterStats OtherStats)
+{
+	Health -= OtherStats.Health;
+	Mana -= OtherStats.Mana;
+	Attack -= OtherStats.Attack;
+	MoveSpeed -= OtherStats.MoveSpeed;
+	JumpForce -= OtherStats.JumpForce;
+
+	return *this;
+}
 FCharacterStats UDataLibrary::AddCharacterStats(FCharacterStats A, FCharacterStats B)
 {
 	return A + B;
+}
+
+FCharacterStats UDataLibrary::SubtractCharacterStats(FCharacterStats A, FCharacterStats B)
+{
+	return A - B;
 }
 
 UDataLibrary::UDataLibrary()

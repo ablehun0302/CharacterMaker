@@ -26,6 +26,7 @@ public:
 	float JumpForce;
 
 	FCharacterStats& operator+(FCharacterStats OtherStats);
+	FCharacterStats& operator-(FCharacterStats OtherStats);
 };
 
 USTRUCT(BlueprintType)
@@ -99,4 +100,7 @@ public:
 
 	UFUNCTION(BlueprintPure, meta = (DisplayName = "Add Character Stats", CompactNodeTitle = "+", Keywords = "+ add plus", ScriptMethod, ScriptMethodSelfReturn, ScriptOperator = "+;+="), Category = "Math|Data Library")
 	static FCharacterStats AddCharacterStats(FCharacterStats A, FCharacterStats B);
+
+	UFUNCTION(BlueprintPure, meta = (DisplayName = "Subtract Character Stats", CompactNodeTitle = "-", Keywords = "- subtract minus", ScriptMethod, ScriptMethodSelfReturn, ScriptOperator = "-;-="), Category = "Math|Data Library")
+	static FCharacterStats SubtractCharacterStats(FCharacterStats A, FCharacterStats B);
 };
