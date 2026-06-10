@@ -29,68 +29,6 @@ public:
 	FCharacterStats& operator-(FCharacterStats OtherStats);
 };
 
-USTRUCT(BlueprintType)
-struct FBaseSkillData
-{
-	GENERATED_USTRUCT_BODY()
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText SkillName;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString Description;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float CoolTime;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<UTexture2D> SkillImage;
-};
-
-USTRUCT(BlueprintType)
-struct FAOESkillData : public FTableRowBase
-{
-	GENERATED_USTRUCT_BODY()
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FBaseSkillData BaseSkillData;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Radius;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float EffectValue;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<UNiagaraSystem> EffectParticle;
-};
-
-USTRUCT(BlueprintType)
-struct FProjectileSkillData : public FTableRowBase
-{
-	GENERATED_USTRUCT_BODY()
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FBaseSkillData BaseSkillData;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float BulletRadius;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Speed;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float LifeSpan;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float GravityScale;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<UNiagaraSystem> BulletParticle;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<UNiagaraSystem> HitParticle;
-};
-
-USTRUCT(Atomic, BlueprintType)
-struct FAOESkillInfo
-{
-	GENERATED_USTRUCT_BODY()
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Radius;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float EffectValue;
-};
-
 UCLASS()
 class CHARACTERMAKER_API UDataLibrary : public UBlueprintFunctionLibrary
 {
