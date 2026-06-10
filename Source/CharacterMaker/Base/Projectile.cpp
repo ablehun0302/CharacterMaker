@@ -4,6 +4,7 @@
 #include "Projectile.h"
 #include "Components/SphereComponent.h"
 #include "Niagara/Public/NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
 // Sets default values
@@ -27,6 +28,7 @@ void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	OnActorBeginOverlap.AddDynamic(this, &AProjectile::ProcessActorBeginOverlap);
 }
 
 // Called every frame
@@ -36,7 +38,7 @@ void AProjectile::Tick(float DeltaTime)
 
 }
 
-void AProjectile::InitProjectile(float InBulletRadius, float InSpeed, float InLifeSpan, float InGravityScale, UNiagaraSystem* InBulletParticle)
+void AProjectile::InitProjectile(float InBulletRadius, float InSpeed, float InLifeSpan, float InGravityScale, UNiagaraSystem* InBulletParticle, UNiagaraSystem* InHitParticle)
 {
 	Body->SetSphereRadius(InBulletRadius);
 
@@ -44,7 +46,28 @@ void AProjectile::InitProjectile(float InBulletRadius, float InSpeed, float InLi
 	ProjectileMovement->ProjectileGravityScale = InGravityScale;
 
 	Particle->SetAsset(InBulletParticle);
+	HitParticle = InHitParticle;
 
 	SetLifeSpan(InLifeSpan);
+}
+
+void AProjectile::ProcessActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
+{
+
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+		OverlappedActor,
+		HitParticle,
+		OverlappedActor->GetActorLocation()
+	);
+
+	// 서버 충돌 처리
+	/*if (HasAuthority())
+	{
+		if (OtherActor != GetOwner())
+		{			
+			UE_LOG(LogTemp, Warning, TEXT("Hit!!!: %s"), *OtherActor->GetName());
+		}
+	}*/
+	Destroy();
 }
 

@@ -9,6 +9,7 @@
 UProjectileSkillPDA::UProjectileSkillPDA()
 {
 	SkillInfo.SkillType = ESkillType::Projectile;
+	BulletActorClass = AProjectile::StaticClass();
 }
 
 bool UProjectileSkillPDA::SpawnVisualEffect(APawn* Caster)
@@ -35,7 +36,7 @@ bool UProjectileSkillPDA::SpawnVisualEffect(APawn* Caster)
 	{
 		return false;
 	}
-	SpawnedActor->InitProjectile(BulletRadius, Speed, LifeSpan, GravityScale, BulletParticle);
+	SpawnedActor->InitProjectile(BulletRadius, Speed, LifeSpan, GravityScale, BulletParticle, HitParticle);
 
 	// 투사체 최종 생성
 	SpawnedActor->FinishSpawning(Character->GetProjectileSpawnPoint()->GetComponentTransform());
