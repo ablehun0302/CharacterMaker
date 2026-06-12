@@ -20,10 +20,8 @@ bool UProjectileSkillPDA::SpawnVisualEffect(APawn* Caster)
 	}
 
 	AHuman* Character = Cast<AHuman>(Caster);
-
+	
 	// 투사체 생성 보류
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.Owner = Caster;
 	auto SpawnedActor = Caster->GetWorld()->SpawnActorDeferred<AProjectile>(
 		BulletActorClass,
 		Character->GetProjectileSpawnPoint()->GetComponentTransform(),

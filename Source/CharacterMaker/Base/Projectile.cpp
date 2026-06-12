@@ -6,6 +6,7 @@
 #include "Niagara/Public/NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -27,6 +28,9 @@ AProjectile::AProjectile()
 void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+
+	FString RoleStr = StaticEnum<ENetRole>()->GetDisplayNameTextByValue((int64)GetRemoteRole()).ToString();
+	UKismetSystemLibrary::PrintString(GetWorld(), RoleStr);
 	
 	OnActorBeginOverlap.AddDynamic(this, &AProjectile::ProcessActorBeginOverlap);
 }
@@ -59,15 +63,16 @@ void AProjectile::ProcessActorBeginOverlap(AActor* OverlappedActor, AActor* Othe
 		HitParticle,
 		OverlappedActor->GetActorLocation()
 	);
-
+	
 	// 서버 충돌 처리
-	/*if (HasAuthority())
+	if (Owner->HasAuthority())
 	{
 		if (OtherActor != GetOwner())
 		{			
 			UE_LOG(LogTemp, Warning, TEXT("Hit!!!: %s"), *OtherActor->GetName());
 		}
-	}*/
+	}
+
 	Destroy();
 }
 
