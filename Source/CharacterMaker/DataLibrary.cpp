@@ -23,6 +23,14 @@ FCharacterStats& FCharacterStats::operator-(FCharacterStats OtherStats)
 
 	return *this;
 }
+void FCharacterStats::ClampMax(FCharacterStats MaxStats)
+{
+	Health = FMath::Clamp(Health, 0, MaxStats.Health);
+	Mana = FMath::Clamp(Mana, 0, MaxStats.Mana);
+	Attack = FMath::Clamp(Attack, 0, MaxStats.Attack);
+	MoveSpeed = FMath::Clamp(MoveSpeed, 0, MaxStats.MoveSpeed);
+	JumpForce = FMath::Clamp(JumpForce, 0, MaxStats.JumpForce);
+}
 FCharacterStats UDataLibrary::AddCharacterStats(FCharacterStats A, FCharacterStats B)
 {
 	return A + B;
@@ -33,7 +41,23 @@ FCharacterStats UDataLibrary::SubtractCharacterStats(FCharacterStats A, FCharact
 	return A - B;
 }
 
+FCharacterStats UDataLibrary::ClampCharacterStats(FCharacterStats InStats, FCharacterStats MaxCharacterStats)
+{
+	InStats.ClampMax(MaxCharacterStats);
+	return InStats;
+}
+
+float UDataLibrary::GetHealthCharacterStats(FCharacterStats InStats)
+{
+	return InStats.Health;
+}
+
+float UDataLibrary::GetManaCharacterStats(FCharacterStats InStats)
+{
+	return InStats.Mana;
+}
+
 UDataLibrary::UDataLibrary()
 {
-
+	
 }

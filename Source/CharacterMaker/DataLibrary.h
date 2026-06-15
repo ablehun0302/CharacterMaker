@@ -27,6 +27,7 @@ public:
 
 	FCharacterStats& operator+(FCharacterStats OtherStats);
 	FCharacterStats& operator-(FCharacterStats OtherStats);
+	void ClampMax(FCharacterStats MaxStats);
 };
 
 UCLASS()
@@ -41,4 +42,13 @@ public:
 
 	UFUNCTION(BlueprintPure, meta = (DisplayName = "Subtract Character Stats", CompactNodeTitle = "-", Keywords = "- subtract minus", ScriptMethod, ScriptMethodSelfReturn, ScriptOperator = "-;-="), Category = "Math|Data Library")
 	static FCharacterStats SubtractCharacterStats(FCharacterStats A, FCharacterStats B);
+
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Clamp Character Stats", Keywords = "clamp"), Category = "Math|Data Library")
+	static FCharacterStats ClampCharacterStats(FCharacterStats InStats, FCharacterStats MaxCharacterStats);
+
+	UFUNCTION(BlueprintPure, meta = (DisplayName = "Get Health from Stats", Keywords = "clamp"), Category = "Data|Data Library")
+	static float GetHealthCharacterStats(FCharacterStats InStats);
+
+	UFUNCTION(BlueprintPure, meta = (DisplayName = "Get Mana from Stats", Keywords = "clamp"), Category = "Data|Data Library")
+	static float GetManaCharacterStats(FCharacterStats InStats);
 };
