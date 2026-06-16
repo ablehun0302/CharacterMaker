@@ -31,6 +31,32 @@ void FCharacterStats::ClampMax(FCharacterStats MaxStats)
 	MoveSpeed = FMath::Clamp(MoveSpeed, 0, MaxStats.MoveSpeed);
 	JumpForce = FMath::Clamp(JumpForce, 0, MaxStats.JumpForce);
 }
+int FCharacterStats::GetStatFromType(ECharacterStatType InType) const
+{
+	switch (InType)
+	{
+	case ECharacterStatType::Health:
+		return Health;
+		break;
+	case ECharacterStatType::Mana:
+		return Mana;
+		break;
+	case ECharacterStatType::Attack:
+		return Attack;
+		break;
+	case ECharacterStatType::MoveSpeed:
+		return MoveSpeed;
+		break;
+	case ECharacterStatType::JumpForce:
+		return JumpForce;
+		break;
+	default:
+		break;
+	}
+
+	// 타입이 아무것도 없다면
+	return -1;
+}
 FCharacterStats UDataLibrary::AddCharacterStats(FCharacterStats A, FCharacterStats B)
 {
 	return A + B;
@@ -47,14 +73,9 @@ FCharacterStats UDataLibrary::ClampCharacterStats(FCharacterStats InStats, FChar
 	return InStats;
 }
 
-float UDataLibrary::GetHealthCharacterStats(FCharacterStats InStats)
+int UDataLibrary::GetCharacterStatFromType(const FCharacterStats& Target, ECharacterStatType InType)
 {
-	return InStats.Health;
-}
-
-float UDataLibrary::GetManaCharacterStats(FCharacterStats InStats)
-{
-	return InStats.Mana;
+	return Target.GetStatFromType(InType);
 }
 
 UDataLibrary::UDataLibrary()

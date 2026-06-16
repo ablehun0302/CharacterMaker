@@ -9,25 +9,36 @@
 class UNiagaraSystem;
 class UTexture2D;
 
+UENUM(BlueprintType)
+enum class ECharacterStatType : uint8
+{
+	Health		UMETA(DisplayName = "Health"),
+	Mana		UMETA(DisplayName = "Mana"),
+	Attack		UMETA(DisplayName = "Attack"),
+	MoveSpeed	UMETA(DisplayName = "Move Speed"),
+	JumpForce	UMETA(DisplayName = "Jump Force")
+};
+
 USTRUCT(Atomic, BlueprintType)
 struct FCharacterStats
 {
 	GENERATED_USTRUCT_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Health;
+	int Health;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Mana;
+	int Mana;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Attack;
+	int Attack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MoveSpeed;
+	int MoveSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float JumpForce;
+	int JumpForce;
 
 	FCharacterStats& operator+(FCharacterStats OtherStats);
 	FCharacterStats& operator-(FCharacterStats OtherStats);
 	void ClampMax(FCharacterStats MaxStats);
+	int GetStatFromType(ECharacterStatType InType) const;
 };
 
 UCLASS()
@@ -46,9 +57,6 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Clamp Character Stats", Keywords = "clamp"), Category = "Math|Data Library")
 	static FCharacterStats ClampCharacterStats(FCharacterStats InStats, FCharacterStats MaxCharacterStats);
 
-	UFUNCTION(BlueprintPure, meta = (DisplayName = "Get Health from Stats", Keywords = "clamp"), Category = "Data|Data Library")
-	static float GetHealthCharacterStats(FCharacterStats InStats);
-
-	UFUNCTION(BlueprintPure, meta = (DisplayName = "Get Mana from Stats", Keywords = "clamp"), Category = "Data|Data Library")
-	static float GetManaCharacterStats(FCharacterStats InStats);
+	UFUNCTION(BlueprintPure, meta = (DisplayName = "Get Character Stat from Type", Keywords = "get"), Category = "Data|Data Library")
+	static int GetCharacterStatFromType(const FCharacterStats& Target, ECharacterStatType InType);
 };
