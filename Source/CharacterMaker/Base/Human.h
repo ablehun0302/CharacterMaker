@@ -1,10 +1,18 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Human.generated.h"
+
+UENUM(BlueprintType)
+enum class EState : uint8
+{
+	Normal		UMETA(DisplayName = "Normal"),
+	Attack		UMETA(DisplayName = "Attack"),
+	Dead		UMETA(DisplayName = "Dead")
+};
 
 UCLASS()
 class CHARACTERMAKER_API AHuman : public ACharacter
@@ -27,6 +35,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UArrowComponent* GetProjectileSpawnPoint();
+	
+	UPROPERTY(Category = Default, VisibleAnywhere, BlueprintReadWrite)
+	EState PoseState;
 
 protected:
 	UPROPERTY(Category = Components, VisibleAnywhere, BlueprintReadOnly)
