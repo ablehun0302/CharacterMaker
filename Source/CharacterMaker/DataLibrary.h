@@ -19,7 +19,7 @@ enum class ECharacterStatType : uint8
 	JumpForce	UMETA(DisplayName = "Jump Force")
 };
 
-USTRUCT(Atomic, BlueprintType)
+USTRUCT(BlueprintType)
 struct FCharacterStats
 {
 	GENERATED_USTRUCT_BODY()
@@ -39,6 +39,7 @@ public:
 	FCharacterStats& operator-(FCharacterStats OtherStats);
 	void ClampMax(FCharacterStats MaxStats);
 	int GetStatFromType(ECharacterStatType InType) const;
+	void SetStatFromType(ECharacterStatType InType, int InValue);
 };
 
 UCLASS()
@@ -55,8 +56,11 @@ public:
 	static FCharacterStats SubtractCharacterStats(FCharacterStats A, FCharacterStats B);
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Clamp Character Stats", Keywords = "clamp"), Category = "Math|Data Library")
-	static FCharacterStats ClampCharacterStats(FCharacterStats InStats, FCharacterStats MaxCharacterStats);
+	static FCharacterStats& ClampCharacterStats(UPARAM(ref) FCharacterStats& InStats, FCharacterStats MaxCharacterStats);
 
 	UFUNCTION(BlueprintPure, meta = (DisplayName = "Get Character Stat from Type", Keywords = "get"), Category = "Data|Data Library")
 	static int GetCharacterStatFromType(const FCharacterStats& Target, ECharacterStatType InType);
+
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Set Character Stat from Type", Keywords = "set"), Category = "Data|Data Library")
+	static FCharacterStats& SetCharacterStatFromType(UPARAM(ref) FCharacterStats& Target, ECharacterStatType InType, int InValue);
 };

@@ -57,6 +57,29 @@ int FCharacterStats::GetStatFromType(ECharacterStatType InType) const
 	// 타입이 아무것도 없다면
 	return -1;
 }
+void FCharacterStats::SetStatFromType(ECharacterStatType InType, int InValue)
+{
+	switch (InType)
+	{
+	case ECharacterStatType::Health:
+		Health += InValue;
+		break;
+	case ECharacterStatType::Mana:
+		Mana += InValue;
+		break;
+	case ECharacterStatType::Attack:
+		Attack += InValue;
+		break;
+	case ECharacterStatType::MoveSpeed:
+		MoveSpeed += InValue;
+		break;
+	case ECharacterStatType::JumpForce:
+		JumpForce += InValue;
+		break;
+	default:
+		break;
+	}
+}
 FCharacterStats UDataLibrary::AddCharacterStats(FCharacterStats A, FCharacterStats B)
 {
 	return A + B;
@@ -67,7 +90,7 @@ FCharacterStats UDataLibrary::SubtractCharacterStats(FCharacterStats A, FCharact
 	return A - B;
 }
 
-FCharacterStats UDataLibrary::ClampCharacterStats(FCharacterStats InStats, FCharacterStats MaxCharacterStats)
+FCharacterStats& UDataLibrary::ClampCharacterStats(FCharacterStats& InStats, FCharacterStats MaxCharacterStats)
 {
 	InStats.ClampMax(MaxCharacterStats);
 	return InStats;
@@ -76,6 +99,12 @@ FCharacterStats UDataLibrary::ClampCharacterStats(FCharacterStats InStats, FChar
 int UDataLibrary::GetCharacterStatFromType(const FCharacterStats& Target, ECharacterStatType InType)
 {
 	return Target.GetStatFromType(InType);
+}
+
+FCharacterStats& UDataLibrary::SetCharacterStatFromType(FCharacterStats& Target, ECharacterStatType InType, int InValue)
+{
+	Target.SetStatFromType(InType, InValue);
+	return Target;
 }
 
 UDataLibrary::UDataLibrary()
