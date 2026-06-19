@@ -29,7 +29,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void InitProjectile(float InBulletRadius, float InSpeed, float InLifeSpan, float InGravityScale, UNiagaraSystem* InBulletParticle, UNiagaraSystem* InHitParticle);
+	void InitProjectile(float InBulletRadius, float InSpeed, float InLifeSpan, float InGravityScale, UNiagaraSystem* InBulletParticle, UNiagaraSystem* InHitParticle, int InEffectValue);
 
 	UFUNCTION()
 	void ProcessActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
@@ -46,4 +46,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Effect")
 	TObjectPtr<UNiagaraSystem> HitParticle;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Data")
+	int EffectValue;
 };

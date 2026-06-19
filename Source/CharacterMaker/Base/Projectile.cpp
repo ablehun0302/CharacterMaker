@@ -7,6 +7,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -28,9 +29,6 @@ AProjectile::AProjectile()
 void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-
-	FString RoleStr = StaticEnum<ENetRole>()->GetDisplayNameTextByValue((int64)GetRemoteRole()).ToString();
-	UKismetSystemLibrary::PrintString(GetWorld(), RoleStr);
 	
 	OnActorBeginOverlap.AddDynamic(this, &AProjectile::ProcessActorBeginOverlap);
 }
@@ -42,7 +40,7 @@ void AProjectile::Tick(float DeltaTime)
 
 }
 
-void AProjectile::InitProjectile(float InBulletRadius, float InSpeed, float InLifeSpan, float InGravityScale, UNiagaraSystem* InBulletParticle, UNiagaraSystem* InHitParticle)
+void AProjectile::InitProjectile(float InBulletRadius, float InSpeed, float InLifeSpan, float InGravityScale, UNiagaraSystem* InBulletParticle, UNiagaraSystem* InHitParticle, int InEffectValue)
 {
 	Body->SetSphereRadius(InBulletRadius);
 
@@ -52,11 +50,28 @@ void AProjectile::InitProjectile(float InBulletRadius, float InSpeed, float InLi
 	Particle->SetAsset(InBulletParticle);
 	HitParticle = InHitParticle;
 
+	EffectValue = InEffectValue;
 	SetLifeSpan(InLifeSpan);
 }
 
 void AProjectile::ProcessActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
+	// 자신에게 충돌은 제외
+	if (OtherActor == Owner)
+	{
+		return;
+	}
+
+	// 서버 충돌 처리
+	if (Owner->HasAuthority())
+	{
+		if (OtherActor != GetOwner())
+		{
+			UGameplayStatics::ApplyDamage(OtherActor, EffectValue, nullptr, GetOwner(), nullptr);
+
+			UE_LOG(LogTemp, Warning, TEXT("Hit!!!: %s"), *OtherActor->GetName());
+		}
+	}
 
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(
 		OverlappedActor,
@@ -64,14 +79,6 @@ void AProjectile::ProcessActorBeginOverlap(AActor* OverlappedActor, AActor* Othe
 		OverlappedActor->GetActorLocation()
 	);
 	
-	// 서버 충돌 처리
-	if (Owner->HasAuthority())
-	{
-		if (OtherActor != GetOwner())
-		{			
-			UE_LOG(LogTemp, Warning, TEXT("Hit!!!: %s"), *OtherActor->GetName());
-		}
-	}
 
 	Destroy();
 }

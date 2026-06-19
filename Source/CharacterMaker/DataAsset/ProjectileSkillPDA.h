@@ -23,6 +23,8 @@ public:
 	TSubclassOf<AProjectile> BulletActorClass;
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data")
+	int EffectValue;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data")
 	float BulletRadius;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data")
 	float Speed;

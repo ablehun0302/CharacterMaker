@@ -2,11 +2,14 @@
 
 
 #include "AOESkillPDA.h"
+#include "CharacterMaker/Base/Human.h"
+
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 #include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 UAOESkillPDA::UAOESkillPDA()
 {
@@ -39,6 +42,9 @@ bool UAOESkillPDA::ExecuteSkillServer(APawn* Caster)
 	for (auto &Hit : Hits)
 	{
 		AActor* HitActor = Hit.GetActor();
+		
+		UGameplayStatics::ApplyDamage(HitActor, EffectValue, nullptr, Caster, nullptr);
+
 		UE_LOG(LogTemp, Warning, TEXT("Hit!!!: %s"), *HitActor->GetName());
 	}
 
