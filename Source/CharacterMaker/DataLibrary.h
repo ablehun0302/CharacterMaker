@@ -56,7 +56,7 @@ public:
 	static FCharacterStats SubtractCharacterStats(FCharacterStats A, FCharacterStats B);
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Clamp Character Stats", Keywords = "clamp"), Category = "Math|Data Library")
-	static FCharacterStats& ClampCharacterStats(UPARAM(ref) FCharacterStats& InStats, FCharacterStats MaxCharacterStats);
+	static FCharacterStats ClampCharacterStats(UPARAM(ref) FCharacterStats& InStats, const FCharacterStats& MaxCharacterStats);
 
 	UFUNCTION(BlueprintPure, meta = (DisplayName = "Get Character Stat from Type", Keywords = "get"), Category = "Data|Data Library")
 	static int GetCharacterStatFromType(const FCharacterStats& Target, ECharacterStatType InType);

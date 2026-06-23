@@ -90,7 +90,7 @@ FCharacterStats UDataLibrary::SubtractCharacterStats(FCharacterStats A, FCharact
 	return A - B;
 }
 
-FCharacterStats& UDataLibrary::ClampCharacterStats(FCharacterStats& InStats, FCharacterStats MaxCharacterStats)
+FCharacterStats UDataLibrary::ClampCharacterStats(FCharacterStats& InStats, const FCharacterStats& MaxCharacterStats)
 {
 	InStats.ClampMax(MaxCharacterStats);
 	return InStats;
