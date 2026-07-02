@@ -6,15 +6,17 @@
 #include "CharacterMaker/Base/Human.h"
 #include "CharacterMaker/Base/Projectile.h"
 
+#include "Kismet/KismetSystemLibrary.h"
+
 UProjectileSkillPDA::UProjectileSkillPDA()
 {
 	SkillInfo.SkillType = ESkillType::Projectile;
 	BulletActorClass = AProjectile::StaticClass();
 }
 
-bool UProjectileSkillPDA::SpawnVisualEffect(APawn* Caster)
+bool UProjectileSkillPDA::ExecuteSkillServer(APawn* Caster)
 {
-	if (!Super::SpawnVisualEffect(Caster))
+	if (!Super::ExecuteSkillServer(Caster))
 	{
 		return false;
 	}
@@ -37,7 +39,43 @@ bool UProjectileSkillPDA::SpawnVisualEffect(APawn* Caster)
 	SpawnedActor->InitProjectile(BulletRadius, Speed, LifeSpan, GravityScale, BulletParticle, HitParticle, EffectValue);
 
 	// 투사체 최종 생성
-	SpawnedActor->FinishSpawning(Character->GetProjectileSpawnPoint()->GetComponentTransform());
+	FTransform SpawnTransform;
+	SpawnTransform.SetLocation(Character->GetProjectileSpawnPoint()->GetComponentLocation());
+	SpawnTransform.SetRotation(Character->GetController()->GetControlRotation().Quaternion());
+	SpawnedActor->FinishSpawning(SpawnTransform);
+	
+	return true;
+}
+
+bool UProjectileSkillPDA::SpawnVisualEffect(APawn* Caster)
+{
+	if (!Super::SpawnVisualEffect(Caster) || Caster->HasAuthority())
+	{
+		return false;
+	}
+
+	AHuman* Character = Cast<AHuman>(Caster);
+
+	// 투사체 생성 보류
+	auto SpawnedActor = Caster->GetWorld()->SpawnActorDeferred<AProjectile>(
+		BulletActorClass,
+		Character->GetProjectileSpawnPoint()->GetComponentTransform(),
+		Caster,
+		Caster
+	);
+
+	// 투사체 속성 초기화
+	if (SpawnedActor == nullptr)
+	{
+		return false;
+	}
+	SpawnedActor->InitProjectile(BulletRadius, Speed, LifeSpan, GravityScale, BulletParticle, HitParticle, EffectValue);
+
+	// 투사체 최종 생성
+	FTransform SpawnTransform;
+	SpawnTransform.SetLocation(Character->GetProjectileSpawnPoint()->GetComponentLocation());
+	SpawnTransform.SetRotation(Character->GetBaseAimRotation().Quaternion());
+	SpawnedActor->FinishSpawning(SpawnTransform);
 
 	return true;
 }
