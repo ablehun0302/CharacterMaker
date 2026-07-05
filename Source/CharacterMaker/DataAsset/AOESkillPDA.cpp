@@ -25,12 +25,17 @@ bool UAOESkillPDA::ExecuteSkillServer(APawn* Caster)
 
 	// 충돌 체크
 	TArray<FHitResult> Hits;
-	UKismetSystemLibrary::SphereTraceMultiByProfile(
+
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_GameTraceChannel1));
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_GameTraceChannel2));
+
+	UKismetSystemLibrary::SphereTraceMultiForObjects(
 		Caster,
 		Caster->GetActorLocation(),
 		Caster->GetActorLocation(),
 		Radius,
-		FName(TEXT("Pawn")),
+		ObjectTypes,
 		false,
 		TArray<AActor*>(),
 		EDrawDebugTrace::None,

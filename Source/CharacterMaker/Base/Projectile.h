@@ -32,7 +32,7 @@ public:
 	void InitProjectile(float InBulletRadius, float InSpeed, float InLifeSpan, float InGravityScale, UNiagaraSystem* InBulletParticle, UNiagaraSystem* InHitParticle, int InEffectValue);
 
 	UFUNCTION()
-	void ProcessActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
+	void ProcessComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")

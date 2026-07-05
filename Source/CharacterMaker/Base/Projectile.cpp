@@ -4,6 +4,8 @@
 #include "Projectile.h"
 #include "Components/SphereComponent.h"
 #include "Niagara/Public/NiagaraComponent.h"
+#include "GameFramework/Character.h"
+
 #include "NiagaraFunctionLibrary.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -30,7 +32,11 @@ void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	OnActorBeginOverlap.AddDynamic(this, &AProjectile::ProcessActorBeginOverlap);
+	if (Body)
+	{
+		Body->IgnoreActorWhenMoving(GetInstigator(), true);
+		Body->OnComponentHit.AddDynamic(this, &AProjectile::ProcessComponentHit);
+	}
 }
 
 // Called every frame
@@ -54,7 +60,7 @@ void AProjectile::InitProjectile(float InBulletRadius, float InSpeed, float InLi
 	SetLifeSpan(InLifeSpan);
 }
 
-void AProjectile::ProcessActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
+void AProjectile::ProcessComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	// 자신에게 충돌은 제외
 	if (OtherActor == Owner)
@@ -65,7 +71,8 @@ void AProjectile::ProcessActorBeginOverlap(AActor* OverlappedActor, AActor* Othe
 	// 서버 충돌 처리
 	if (Owner->HasAuthority())
 	{
-		if (OtherActor != GetOwner())
+		ACharacter* OtherCharacter = Cast<ACharacter>(OtherActor);
+		if (OtherCharacter != nullptr)
 		{
 			UGameplayStatics::ApplyDamage(OtherActor, EffectValue, nullptr, GetOwner(), nullptr);
 
@@ -74,9 +81,9 @@ void AProjectile::ProcessActorBeginOverlap(AActor* OverlappedActor, AActor* Othe
 	}
 
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-		OverlappedActor,
+		this,
 		HitParticle,
-		OverlappedActor->GetActorLocation()
+		this->GetActorLocation()
 	);
 	
 
