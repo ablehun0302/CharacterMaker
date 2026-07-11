@@ -18,5 +18,6 @@ void ALoginPC::BeginPlay()
 		}
 	}
 
-
+	SetInputMode(FInputModeUIOnly());
+	SetShowMouseCursor(true);
 }

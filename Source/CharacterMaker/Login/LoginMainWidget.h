@@ -23,8 +23,12 @@ public:
 	TObjectPtr<UEditableTextBox> TextBox_PW;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
-	TObjectPtr<UEditableTextBox> TextBox_ID;
+	TObjectPtr<UEditableTextBox> TextBox_Email;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
 	TObjectPtr<UButton> Btn_SignUp;
+
+private:
+	UFUNCTION()
+	void OnClickedSignUpBtn();
 };
