@@ -8,8 +8,12 @@
 #include "Http.h"
 #include "AuthSubsystem.generated.h"
 
+// SignupNewUser
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSuccessSignUp, const FString&, UID);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFailSignUp, const FString&, ErrorMessage);
+// VerifyPassword
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSuccessVerifyPW, const FString&, UID);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFailVerifyPW, const FString&, ErrorMessage);
 /**
  * 
  */
@@ -25,12 +29,24 @@ public:	// 콜백 함수 이후 서버->클라이언트 이벤트
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnFailSignUp OnFailSignUp;
 
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnSuccessVerifyPW OnSuccessVerifyPW;
+
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnFailVerifyPW OnFailVerifyPW;
+
+	
+
 private:
 	const FString WebApiKey = TEXT("AIzaSyBHV9I9Yd2SIBnPIY2pkUk8vS_EnDCmhLQ");
 
 public:
 	void SignUpEmail(const FString& Email, const FString& PW);
 
+	void SignInEmail(const FString& Email, const FString& PW);
+
 private:	// 콜백 함수
 	void CallSignUpNewUser(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bProcessedSuccessfully);
+
+	void CallVerifyPassword(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bProcessedSuccessfully);
 };

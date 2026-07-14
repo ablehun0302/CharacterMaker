@@ -58,4 +58,10 @@
     - CallSignUpNewUser() 실행 후 델리게이트 실행
     - 회원가입 성공 시 델리게이트를 통해 UID를 전달받고, 실패 시 오류 메시지를 전달받음.
     
-2. **로그인 시스템(예정)**
+2. **로그인 시스템**
+    - LoginMainWidget에서 SignIn버튼을 누름
+    - AuthSubsystem에서 SignInEmail(Email, PW)을 실행
+    - Firebase에 로그인 요청
+    - 요청을 받으면 CallVerifyPassword() 콜백함수 실행
+    - CallVerifyPassword() 실행 후 델리게이트 실행
+    - 로그인 성공 시 델리게이트를 통해 UID를 전달받고, 실패 시 오류 메시지를 전달받음.

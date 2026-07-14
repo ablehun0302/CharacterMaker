@@ -9,6 +9,7 @@
 class UEditableTextBox;
 class UButton;
 class UTextBlock;
+class UAuthSubsystem;
 
 /**
  * 
@@ -30,7 +31,13 @@ public:
 	TObjectPtr<UButton> Btn_SignUp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
+	TObjectPtr<UButton> Btn_SignIn;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
 	TObjectPtr<UTextBlock> Text_Info;
+
+private:
+	UAuthSubsystem* AuthSystem = nullptr;
 
 private:
 	void ClearAllTextInput();
@@ -39,8 +46,18 @@ private:
 	void OnClickedSignUpBtn();
 
 	UFUNCTION()
-	void OnSuccessSignUp(const FString& UID);
+	void OnClickedSignInBtn();
+
+	// Client 콜백 함수
+	UFUNCTION()
+	void CallSuccessSignUp(const FString& UID);
 
 	UFUNCTION()
-	void OnFailSignUp(const FString& ErrorMsg);
+	void CallFailSignUp(const FString& ErrorMsg);
+
+	UFUNCTION()
+	void CallSuccessVerifyPW(const FString& UID);
+
+	UFUNCTION()
+	void CallFailVerifyPW(const FString& ErrorMsg);
 };

@@ -24,6 +24,27 @@ void UAuthSubsystem::SignUpEmail(const FString& Email, const FString& PW)
 	Request->ProcessRequest();
 }
 
+void UAuthSubsystem::SignInEmail(const FString& Email, const FString& PW)
+{
+	FHttpRequestPtr Request = FHttpModule::Get().CreateRequest();
+
+	// Request 설정
+	FString URL = FString::Printf(TEXT("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=%s"), *WebApiKey);
+	Request->SetURL(URL);
+	Request->SetVerb(TEXT("POST"));
+	Request->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
+
+	// Json 데이터 세팅
+	FString ContentStr = FString::Printf(TEXT(R"({"email":"%s","password":"%s","returnSecureToken":true})"), *Email, *PW);
+	Request->SetContentAsString(ContentStr);
+
+	// 응답 콜백 함수 바인딩
+	Request->OnProcessRequestComplete().BindUObject(this, &UAuthSubsystem::CallVerifyPassword);
+
+	// 전송
+	Request->ProcessRequest();
+}
+
 void UAuthSubsystem::CallSignUpNewUser(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bProcessedSuccessfully)
 {
 	// 통신 실패
@@ -61,4 +82,43 @@ void UAuthSubsystem::CallSignUpNewUser(FHttpRequestPtr Request, FHttpResponsePtr
 	UE_LOG(LogTemp, Display, TEXT("---Firebase Response---\n%s"), *ResponseStr);
 
 	OnSuccessSignUp.Broadcast(UID);
+}
+
+void UAuthSubsystem::CallVerifyPassword(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bProcessedSuccessfully)
+{
+	// 통신 실패
+	if (!bProcessedSuccessfully || !Response.IsValid())
+	{
+		OnFailVerifyPW.Broadcast(TEXT("통신 오류"));
+		return;
+	}
+
+	// 수신받은 답변
+	FString ResponseStr = Response->GetContentAsString();
+
+	TSharedPtr<FJsonObject> JsonObject;
+	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(ResponseStr);
+
+	// 파싱 실패
+	if (!FJsonSerializer::Deserialize(Reader, JsonObject))
+	{
+		OnFailVerifyPW.Broadcast(TEXT("파싱 실패"));
+		return;
+	}
+
+	// 수신 오류
+	if (Response->GetResponseCode() != 200)
+	{
+		const TSharedPtr<FJsonObject> ErrorObject = JsonObject->GetObjectField(TEXT("error"));
+		FString ErrorMessage = ErrorObject->GetStringField(TEXT("message"));
+		OnFailVerifyPW.Broadcast(ErrorMessage);
+		return;
+	}
+
+
+	FString UID;
+	JsonObject->TryGetStringField(TEXT("localId"), UID);
+	UE_LOG(LogTemp, Display, TEXT("---Firebase Response---\n%s"), *ResponseStr);
+
+	OnSuccessVerifyPW.Broadcast(UID);
 }
