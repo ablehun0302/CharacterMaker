@@ -50,10 +50,12 @@
     스킬을 데이터 중심으로 관리하여 불필요한 액터 생성 비용을 줄이고, 새로운 스킬 추가 시 데이터 에셋만 제작하면 됨.
 
 ### 개발 진행 상황
-1. **회원가입, 로그인 시스템**
+1. **회원가입 시스템**
     - LoginMainWidget에서 SignUp버튼을 누름
     - AuthSubsystem에서 SignUpEmail(Email, PW)을 실행
     - Firebase에 회원가입 요청
     - 요청을 받으면 CallSignUpNewUser() 콜백함수 실행
-    - (계획) CallSignUpNewUser 실행 후 델리게이트 실행
-    - 델리게이트에서 이거저거 하기
+    - CallSignUpNewUser() 실행 후 델리게이트 실행
+    - 회원가입 성공 시 델리게이트를 통해 UID를 전달받고, 실패 시 오류 메시지를 전달받음.
+    
+2. **로그인 시스템(예정)**

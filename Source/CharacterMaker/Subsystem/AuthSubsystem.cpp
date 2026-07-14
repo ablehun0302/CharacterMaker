@@ -26,18 +26,39 @@ void UAuthSubsystem::SignUpEmail(const FString& Email, const FString& PW)
 
 void UAuthSubsystem::CallSignUpNewUser(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bProcessedSuccessfully)
 {
+	// 통신 실패
 	if (!bProcessedSuccessfully || !Response.IsValid())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Connect Error"));
+		OnFailSignUp.Broadcast(TEXT("통신 오류"));
 		return;
 	}
 
+	// 수신받은 답변
+	FString ResponseStr = Response->GetContentAsString();
+
+	TSharedPtr<FJsonObject> JsonObject;
+	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(ResponseStr);
+
+	// 파싱 실패
+	if (!FJsonSerializer::Deserialize(Reader, JsonObject))
+	{
+		OnFailSignUp.Broadcast(TEXT("파싱 실패"));
+		return;
+	}
+
+	// 수신 오류
 	if (Response->GetResponseCode() != 200)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Response Error"));
+		const TSharedPtr<FJsonObject> ErrorObject = JsonObject->GetObjectField(TEXT("error"));
+		FString ErrorMessage = ErrorObject->GetStringField(TEXT("message"));
+		OnFailSignUp.Broadcast(ErrorMessage);
 		return;
 	}
 	
-	FString ResponseStr = Response->GetContentAsString();
+
+	FString UID;
+	JsonObject->TryGetStringField(TEXT("localId"), UID);
 	UE_LOG(LogTemp, Display, TEXT("---Firebase Response---\n%s"), *ResponseStr);
+
+	OnSuccessSignUp.Broadcast(UID);
 }

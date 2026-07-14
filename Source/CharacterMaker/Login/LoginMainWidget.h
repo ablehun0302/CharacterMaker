@@ -8,6 +8,7 @@
 
 class UEditableTextBox;
 class UButton;
+class UTextBlock;
 
 /**
  * 
@@ -28,7 +29,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
 	TObjectPtr<UButton> Btn_SignUp;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
+	TObjectPtr<UTextBlock> Text_Info;
+
 private:
+	void ClearAllTextInput();
+
 	UFUNCTION()
 	void OnClickedSignUpBtn();
+
+	UFUNCTION()
+	void OnSuccessSignUp(const FString& UID);
+
+	UFUNCTION()
+	void OnFailSignUp(const FString& ErrorMsg);
 };
