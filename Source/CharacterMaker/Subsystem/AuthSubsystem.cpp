@@ -3,6 +3,21 @@
 
 #include "AuthSubsystem.h"
 
+const FString& UAuthSubsystem::GetIdToken()
+{
+	return IdToken;
+}
+
+const FString& UAuthSubsystem::GetRefreshToken()
+{
+	return RefreshToken;
+}
+
+const FString& UAuthSubsystem::GetUID()
+{
+	return UID;
+}
+
 void UAuthSubsystem::SignUpEmail(const FString& Email, const FString& PW)
 {
 	FHttpRequestPtr Request = FHttpModule::Get().CreateRequest();
@@ -115,10 +130,10 @@ void UAuthSubsystem::CallVerifyPassword(FHttpRequestPtr Request, FHttpResponsePt
 		return;
 	}
 
-
-	FString UID;
+	JsonObject->TryGetStringField(TEXT("idToken"), IdToken);
+	JsonObject->TryGetStringField(TEXT("refreshToken"), RefreshToken);
 	JsonObject->TryGetStringField(TEXT("localId"), UID);
 	UE_LOG(LogTemp, Display, TEXT("---Firebase Response---\n%s"), *ResponseStr);
 
-	OnSuccessVerifyPW.Broadcast(UID);
+	OnSuccessVerifyPW.Broadcast();
 }
