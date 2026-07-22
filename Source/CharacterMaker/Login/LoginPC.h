@@ -23,4 +23,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
 	TObjectPtr<ULoginMainWidget> WBP_LoginMainUI;
+
+private:
+	UFUNCTION()
+	void CallSuccessSignIn();
 };

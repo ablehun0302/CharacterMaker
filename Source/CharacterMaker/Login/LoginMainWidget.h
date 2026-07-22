@@ -56,8 +56,5 @@ private:
 	void CallFailSignUp(const FString& ErrorMsg);
 
 	UFUNCTION()
-	void CallSuccessVerifyPW(const FString& UID);
-
-	UFUNCTION()
 	void CallFailVerifyPW(const FString& ErrorMsg);
 };

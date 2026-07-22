@@ -2,6 +2,7 @@
 
 
 #include "AuthSubsystem.h"
+#include "Kismet/GameplayStatics.h"
 
 const FString& UAuthSubsystem::GetIdToken()
 {
@@ -91,8 +92,6 @@ void UAuthSubsystem::CallSignUpNewUser(FHttpRequestPtr Request, FHttpResponsePtr
 		return;
 	}
 	
-
-	FString UID;
 	JsonObject->TryGetStringField(TEXT("localId"), UID);
 	UE_LOG(LogTemp, Display, TEXT("---Firebase Response---\n%s"), *ResponseStr);
 

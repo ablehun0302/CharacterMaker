@@ -13,7 +13,4 @@ UCLASS()
 class CHARACTERMAKER_API ALoginGM : public AGameModeBase
 {
 	GENERATED_BODY()
-	
-private:
-	void CallSuccessSignIn();
 };

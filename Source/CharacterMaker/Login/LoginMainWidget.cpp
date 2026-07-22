@@ -57,9 +57,9 @@ void ULoginMainWidget::OnClickedSignUpBtn()
 
 void ULoginMainWidget::OnClickedSignInBtn()
 {
-	AuthSystem->OnSuccessVerifyPW.RemoveAll(this);
+	//AuthSystem->OnSuccessVerifyPW.RemoveAll(this);
 	AuthSystem->OnFailVerifyPW.RemoveAll(this);
-	AuthSystem->OnSuccessVerifyPW.AddDynamic(this, &ULoginMainWidget::CallSuccessVerifyPW);
+	//AuthSystem->OnSuccessVerifyPW.AddDynamic(this, &ULoginMainWidget::CallSuccessVerifyPW);
 	AuthSystem->OnFailVerifyPW.AddDynamic(this, &ULoginMainWidget::CallFailVerifyPW);
 
 	AuthSystem->SignInEmail(TextBox_Email->GetText().ToString(), TextBox_PW->GetText().ToString());
@@ -80,11 +80,6 @@ void ULoginMainWidget::CallFailSignUp(const FString& ErrorMsg)
 	);
 
 	ClearAllTextInput();
-}
-
-void ULoginMainWidget::CallSuccessVerifyPW(const FString& UID)
-{
-	UE_LOG(LogTemp, Display, TEXT("SuccessVerifyPW %s"), *UID);
 }
 
 void ULoginMainWidget::CallFailVerifyPW(const FString& ErrorMsg)
