@@ -45,6 +45,7 @@ private:
 	FString IdToken;
 	FString RefreshToken;
 	FString UID;
+	FString ExpiresIn;
 
 public:
 	void SignUpEmail(const FString& Email, const FString& PW);
