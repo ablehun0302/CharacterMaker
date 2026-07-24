@@ -33,6 +33,29 @@ void UPlayerDataSubsystem::UpdateNickname(const FString& InNickname)
 	Request->ProcessRequest();
 }
 
+void UPlayerDataSubsystem::GetNickname()
+{
+	//AuthSubsystem 가져오기
+	UAuthSubsystem* AuthSystem = GetGameInstance()->GetSubsystem<UAuthSubsystem>();
+	if (!AuthSystem)
+	{
+		return;
+	}
+
+	// Request 설정
+	FHttpRequestPtr Request = FHttpModule::Get().CreateRequest();
+
+	FString URL = FString::Printf(TEXT("https://firestore.asia-northeast3.rep.googleapis.com/v1/projects/rpg-project-c4596/databases/(default)/documents/user_info/%s"), *(AuthSystem->GetUID()));
+	Request->SetURL(URL);
+	Request->SetVerb(TEXT("GET"));
+
+	// 응답 콜백 함수 바인딩
+	Request->OnProcessRequestComplete().BindUObject(this, &UPlayerDataSubsystem::CallGetNickname);
+
+	// 전송
+	Request->ProcessRequest();
+}
+
 void UPlayerDataSubsystem::CallUpdateNickname(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bProcessedSuccessfully)
 {
 	// 통신 실패
@@ -63,9 +86,50 @@ void UPlayerDataSubsystem::CallUpdateNickname(FHttpRequestPtr Request, FHttpResp
 		OnFailUpdateNickname.Broadcast(ErrorMessage);
 		return;
 	}
+	const TSharedPtr<FJsonObject> FieldObject = JsonObject->GetObjectField(TEXT("fields"));
+	const TSharedPtr<FJsonObject> NicknameObj = FieldObject->GetObjectField(TEXT("nickname"));
+	NicknameObj->TryGetStringField(TEXT("stringValue"), Nickname);
 
-	//JsonObject->TryGetStringField(TEXT("localId"), Nickname);
-	UE_LOG(LogTemp, Display, TEXT("---PlayerData Response---\n%s"), *ResponseStr);
+	UE_LOG(LogTemp, Display, TEXT("---PlayerData CallUpdateNickname---\n%s"), *ResponseStr);
 
-	//OnSuccessSignUp.Broadcast(UID);
+	OnSuccessUpdateNickname.Broadcast(Nickname);
+}
+
+void UPlayerDataSubsystem::CallGetNickname(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bProcessedSuccessfully)
+{
+	// 통신 실패
+	if (!bProcessedSuccessfully || !Response.IsValid())
+	{
+		//OnFailUpdateNickname.Broadcast(TEXT("통신 오류"));
+		return;
+	}
+
+	// 수신받은 답변
+	FString ResponseStr = Response->GetContentAsString();
+
+	TSharedPtr<FJsonObject> JsonObject;
+	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(ResponseStr);
+
+	// 파싱 실패
+	if (!FJsonSerializer::Deserialize(Reader, JsonObject))
+	{
+		//OnFailUpdateNickname.Broadcast(TEXT("파싱 실패"));
+		return;
+	}
+
+	// 수신 오류
+	if (Response->GetResponseCode() != 200)
+	{
+		/*const TSharedPtr<FJsonObject> ErrorObject = JsonObject->GetObjectField(TEXT("error"));
+		FString ErrorMessage = ErrorObject->GetStringField(TEXT("message"));
+		OnFailUpdateNickname.Broadcast(ErrorMessage);*/
+		return;
+	}
+	const TSharedPtr<FJsonObject> FieldObject = JsonObject->GetObjectField(TEXT("fields"));
+	const TSharedPtr<FJsonObject> NicknameObj = FieldObject->GetObjectField(TEXT("nickname"));
+	NicknameObj->TryGetStringField(TEXT("stringValue"), Nickname);
+
+	UE_LOG(LogTemp, Display, TEXT("---PlayerData CallGetNickname---\n%s"), *ResponseStr);
+
+	OnSuccessUpdateNickname.Broadcast(Nickname);
 }

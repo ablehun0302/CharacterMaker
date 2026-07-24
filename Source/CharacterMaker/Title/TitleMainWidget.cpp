@@ -43,10 +43,17 @@ void UTitleMainWidget::OnClickedSetNicknameBtn()
 		return;
 	}
 
+	PlayerDataSystem->OnSuccessUpdateNickname.RemoveAll(this);
 	PlayerDataSystem->OnFailUpdateNickname.RemoveAll(this);
+	PlayerDataSystem->OnSuccessUpdateNickname.AddDynamic(this, &UTitleMainWidget::CallSuccessUpdateNickname);
 	PlayerDataSystem->OnFailUpdateNickname.AddDynamic(this, &UTitleMainWidget::CallFailUpdateNickname);
 
 	PlayerDataSystem->UpdateNickname(TextBox_Nickname->GetText().ToString());
+}
+
+void UTitleMainWidget::CallSuccessUpdateNickname(const FString& InNickname)
+{
+	UE_LOG(LogTemp, Display, TEXT("New Nickname: %s"), *InNickname);
 }
 
 void UTitleMainWidget::CallFailUpdateNickname(const FString& InErrorMessage)

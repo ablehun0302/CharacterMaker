@@ -45,5 +45,8 @@ private:
 	void OnClickedSetNicknameBtn();
 
 	UFUNCTION()
+	void CallSuccessUpdateNickname(const FString& InNickname);
+
+	UFUNCTION()
 	void CallFailUpdateNickname(const FString& InErrorMessage);
 };
