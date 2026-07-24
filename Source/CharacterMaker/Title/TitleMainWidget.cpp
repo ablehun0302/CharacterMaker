@@ -5,18 +5,23 @@
 #include "Components/Button.h"
 #include "Components/EditableTextBox.h"
 #include "Kismet/GameplayStatics.h"
+#include "CharacterMaker/Subsystem/PlayerDataSubsystem.h"
 
 void UTitleMainWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	if (Button_CreateServer)
+	if (Btn_CreateServer)
 	{
-		Button_CreateServer->OnClicked.AddDynamic(this, &UTitleMainWidget::OnClickedCreateServerBtn);
+		Btn_CreateServer->OnClicked.AddDynamic(this, &UTitleMainWidget::OnClickedCreateServerBtn);
 	}
-	if (Button_Join)
+	if (Btn_Join)
 	{
-		Button_Join->OnClicked.AddDynamic(this, &UTitleMainWidget::OnClickedJoinBtn);
+		Btn_Join->OnClicked.AddDynamic(this, &UTitleMainWidget::OnClickedJoinBtn);
+	}
+	if (Btn_SetNickname)
+	{
+		Btn_SetNickname->OnClicked.AddDynamic(this, &UTitleMainWidget::OnClickedSetNicknameBtn);
 	}
 }
 
@@ -28,4 +33,23 @@ void UTitleMainWidget::OnClickedCreateServerBtn()
 void UTitleMainWidget::OnClickedJoinBtn()
 {
 	UGameplayStatics::OpenLevel(GetOwningPlayer(), FName(TextBox_IPInput->GetText().ToString()));
+}
+
+void UTitleMainWidget::OnClickedSetNicknameBtn()
+{
+	UPlayerDataSubsystem* PlayerDataSystem = GetGameInstance()->GetSubsystem<UPlayerDataSubsystem>();
+	if (!PlayerDataSystem)
+	{
+		return;
+	}
+
+	PlayerDataSystem->OnFailUpdateNickname.RemoveAll(this);
+	PlayerDataSystem->OnFailUpdateNickname.AddDynamic(this, &UTitleMainWidget::CallFailUpdateNickname);
+
+	PlayerDataSystem->UpdateNickname(TextBox_Nickname->GetText().ToString());
+}
+
+void UTitleMainWidget::CallFailUpdateNickname(const FString& InErrorMessage)
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *InErrorMessage);
 }

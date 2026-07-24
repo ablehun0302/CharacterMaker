@@ -20,13 +20,19 @@ protected:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
-	TObjectPtr<UButton> Button_CreateServer;
+	TObjectPtr<UButton> Btn_CreateServer;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
-	TObjectPtr<UButton> Button_Join;
+	TObjectPtr<UButton> Btn_Join;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
+	TObjectPtr<UButton> Btn_SetNickname;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
 	TObjectPtr<UEditableTextBox> TextBox_IPInput;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
+	TObjectPtr<UEditableTextBox> TextBox_Nickname;
 
 private:
 	UFUNCTION()
@@ -34,4 +40,10 @@ private:
 
 	UFUNCTION()
 	void OnClickedJoinBtn();
+
+	UFUNCTION()
+	void OnClickedSetNicknameBtn();
+
+	UFUNCTION()
+	void CallFailUpdateNickname(const FString& InErrorMessage);
 };
