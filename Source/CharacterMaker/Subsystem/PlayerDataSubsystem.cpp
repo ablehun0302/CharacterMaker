@@ -14,6 +14,12 @@ void UPlayerDataSubsystem::UpdateNickname(const FString& InNickname)
 	}
 
 	// Request 설정
+	if (AuthSystem->GetUID().IsEmpty())
+	{
+		UE_LOG(LogTemp, Error, TEXT("Null UID"));
+		return;
+	}
+
 	FHttpRequestPtr Request = FHttpModule::Get().CreateRequest();
 
 	FString URL = FString::Printf(TEXT("https://firestore.asia-northeast3.rep.googleapis.com/v1/projects/rpg-project-c4596/databases/(default)/documents/user_info/%s"), *(AuthSystem->GetUID()));
@@ -27,7 +33,23 @@ void UPlayerDataSubsystem::UpdateNickname(const FString& InNickname)
 	Request->SetContentAsString(ContentStr);
 
 	// 응답 콜백 함수 바인딩
-	Request->OnProcessRequestComplete().BindUObject(this, &UPlayerDataSubsystem::CallUpdateNickname);
+	Request->OnProcessRequestComplete().BindLambda(
+		[this](FHttpRequestPtr Request, FHttpResponsePtr Response, bool bSuccess)
+		{
+			HandleDocumentResponse(Request, Response, bSuccess,
+				[this](bool bSuccess, const FString& InData)
+				{
+					if (bSuccess)
+					{
+						OnSuccessUpdateNickname.Broadcast(InData);
+					}
+					else
+					{
+						OnFailUpdateNickname.Broadcast(InData);
+					}
+				});
+		}
+	);
 
 	// 전송
 	Request->ProcessRequest();
@@ -43,6 +65,12 @@ void UPlayerDataSubsystem::GetNickname()
 	}
 
 	// Request 설정
+	if (AuthSystem->GetUID().IsEmpty())
+	{
+		UE_LOG(LogTemp, Error, TEXT("Null UID"));
+		return;
+	}
+
 	FHttpRequestPtr Request = FHttpModule::Get().CreateRequest();
 
 	FString URL = FString::Printf(TEXT("https://firestore.asia-northeast3.rep.googleapis.com/v1/projects/rpg-project-c4596/databases/(default)/documents/user_info/%s"), *(AuthSystem->GetUID()));
@@ -50,18 +78,34 @@ void UPlayerDataSubsystem::GetNickname()
 	Request->SetVerb(TEXT("GET"));
 
 	// 응답 콜백 함수 바인딩
-	Request->OnProcessRequestComplete().BindUObject(this, &UPlayerDataSubsystem::CallGetNickname);
+	Request->OnProcessRequestComplete().BindLambda(
+		[this](FHttpRequestPtr Request, FHttpResponsePtr Response, bool bSuccess)
+		{
+			HandleDocumentResponse(Request, Response, bSuccess,
+				[this](bool bSuccess, const FString& InData)
+				{
+					if (bSuccess)
+					{
+						OnSuccessGetNickname.Broadcast(InData);
+					}
+					else
+					{
+						UE_LOG(LogTemp, Warning, TEXT("GetNickname Error: %s"), *InData);
+					}
+				});
+		}
+	);
 
 	// 전송
 	Request->ProcessRequest();
 }
 
-void UPlayerDataSubsystem::CallUpdateNickname(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bProcessedSuccessfully)
+void UPlayerDataSubsystem::HandleDocumentResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bProcessedSuccessfully, TFunction<void(bool bSuccess, const FString& InData)> OnComplete)
 {
 	// 통신 실패
 	if (!bProcessedSuccessfully || !Response.IsValid())
 	{
-		OnFailUpdateNickname.Broadcast(TEXT("통신 오류"));
+		OnComplete(false, TEXT("통신 오류"));
 		return;
 	}
 
@@ -74,7 +118,7 @@ void UPlayerDataSubsystem::CallUpdateNickname(FHttpRequestPtr Request, FHttpResp
 	// 파싱 실패
 	if (!FJsonSerializer::Deserialize(Reader, JsonObject))
 	{
-		OnFailUpdateNickname.Broadcast(TEXT("파싱 실패"));
+		OnComplete(false, TEXT("파싱 실패"));
 		return;
 	}
 
@@ -83,16 +127,18 @@ void UPlayerDataSubsystem::CallUpdateNickname(FHttpRequestPtr Request, FHttpResp
 	{
 		const TSharedPtr<FJsonObject> ErrorObject = JsonObject->GetObjectField(TEXT("error"));
 		FString ErrorMessage = ErrorObject->GetStringField(TEXT("message"));
-		OnFailUpdateNickname.Broadcast(ErrorMessage);
+		OnComplete(false, ErrorMessage);
 		return;
 	}
+
+	// 수신 성공시 닉네임 저장 및 이벤트 호출
 	const TSharedPtr<FJsonObject> FieldObject = JsonObject->GetObjectField(TEXT("fields"));
 	const TSharedPtr<FJsonObject> NicknameObj = FieldObject->GetObjectField(TEXT("nickname"));
 	NicknameObj->TryGetStringField(TEXT("stringValue"), Nickname);
 
 	UE_LOG(LogTemp, Display, TEXT("---PlayerData CallUpdateNickname---\n%s"), *ResponseStr);
 
-	OnSuccessUpdateNickname.Broadcast(Nickname);
+	OnComplete(true, Nickname);
 }
 
 void UPlayerDataSubsystem::CallGetNickname(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bProcessedSuccessfully)

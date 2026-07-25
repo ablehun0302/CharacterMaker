@@ -37,7 +37,7 @@ public:
 	void GetNickname();
 
 private:
-	void CallUpdateNickname(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bProcessedSuccessfully);
+	void HandleDocumentResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bProcessedSuccessfully, TFunction<void (bool bSuccess, const FString& InData)> OnComplete);
 
 	void CallGetNickname(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bProcessedSuccessfully);
 };
