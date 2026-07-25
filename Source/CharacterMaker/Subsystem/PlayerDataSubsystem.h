@@ -10,6 +10,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSuccessUpdateNickname, const FString&, Nickname);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFailUpdateNickname, const FString&, ErrorMessage);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSuccessGetNickname, const FString&, Nickname);
 /**
  * 
  */
@@ -23,6 +24,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Event")
 	FOnFailUpdateNickname OnFailUpdateNickname;
+
+	UPROPERTY(BlueprintAssignable, Category = "Event")
+	FOnSuccessGetNickname OnSuccessGetNickname;
 
 private:
 	FString Nickname;

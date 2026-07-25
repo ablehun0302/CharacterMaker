@@ -8,6 +8,7 @@
 
 class UButton;
 class UEditableTextBox;
+class UTextBlock;
 /**
  * 
  */
@@ -34,6 +35,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
 	TObjectPtr<UEditableTextBox> TextBox_Nickname;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
+	TObjectPtr<UTextBlock> Text_NicknameInfo;
+
 private:
 	UFUNCTION()
 	void OnClickedCreateServerBtn();
@@ -49,4 +53,7 @@ private:
 
 	UFUNCTION()
 	void CallFailUpdateNickname(const FString& InErrorMessage);
+
+	UFUNCTION()
+	void CallSuccessGetNickname(const FString& InNickname);
 };

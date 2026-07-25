@@ -131,5 +131,5 @@ void UPlayerDataSubsystem::CallGetNickname(FHttpRequestPtr Request, FHttpRespons
 
 	UE_LOG(LogTemp, Display, TEXT("---PlayerData CallGetNickname---\n%s"), *ResponseStr);
 
-	OnSuccessUpdateNickname.Broadcast(Nickname);
+	OnSuccessGetNickname.Broadcast(Nickname);
 }

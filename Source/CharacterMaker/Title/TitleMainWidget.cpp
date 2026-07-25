@@ -4,6 +4,7 @@
 #include "TitleMainWidget.h"
 #include "Components/Button.h"
 #include "Components/EditableTextBox.h"
+#include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
 #include "CharacterMaker/Subsystem/PlayerDataSubsystem.h"
 
@@ -23,6 +24,16 @@ void UTitleMainWidget::NativeConstruct()
 	{
 		Btn_SetNickname->OnClicked.AddDynamic(this, &UTitleMainWidget::OnClickedSetNicknameBtn);
 	}
+
+	// 플레이어의 닉네임 가져오기
+	UPlayerDataSubsystem* PlayerDataSystem = GetGameInstance()->GetSubsystem<UPlayerDataSubsystem>();
+	if (!PlayerDataSystem)
+	{
+		return;
+	}
+
+	PlayerDataSystem->GetNickname();
+	PlayerDataSystem->OnSuccessGetNickname.AddDynamic(this, &UTitleMainWidget::CallSuccessGetNickname);
 }
 
 void UTitleMainWidget::OnClickedCreateServerBtn()
@@ -53,10 +64,19 @@ void UTitleMainWidget::OnClickedSetNicknameBtn()
 
 void UTitleMainWidget::CallSuccessUpdateNickname(const FString& InNickname)
 {
-	UE_LOG(LogTemp, Display, TEXT("New Nickname: %s"), *InNickname);
+	Text_NicknameInfo->SetText(FText::FromString(TEXT("닉네임 변경 완료")));
 }
 
 void UTitleMainWidget::CallFailUpdateNickname(const FString& InErrorMessage)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *InErrorMessage);
+	Text_NicknameInfo->SetText(FText::FromString(FString::Printf(TEXT("닉네임 변경 실패: %s"), *InErrorMessage)));
+	TextBox_Nickname->SetText(FText::GetEmpty());
+}
+
+void UTitleMainWidget::CallSuccessGetNickname(const FString& InNickname)
+{
+	if (TextBox_Nickname)
+	{
+		TextBox_Nickname->SetText(FText::FromString(InNickname));
+	}
 }
