@@ -4,6 +4,11 @@
 #include "PlayerDataSubsystem.h"
 #include "AuthSubsystem.h"
 
+const FString& UPlayerDataSubsystem::GetNicknameVar() const
+{
+	return Nickname;
+}
+
 void UPlayerDataSubsystem::UpdateNickname(const FString& InNickname)
 {
 	//AuthSubsystem 가져오기

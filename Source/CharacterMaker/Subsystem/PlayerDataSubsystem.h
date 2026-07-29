@@ -27,6 +27,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Event")
 	FOnSuccessGetNickname OnSuccessGetNickname;
+public:
+	UFUNCTION(BlueprintCallable)
+	const FString& GetNicknameVar() const;
 
 private:
 	FString Nickname;
