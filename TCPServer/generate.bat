@@ -1,1 +1,1 @@
-flatc --cpp Test.fbs
+flatc --cpp UserPacket.fbs

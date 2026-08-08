@@ -133,10 +133,11 @@
     <ClCompile Include="Server.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="test.fbs" />
+    <ClInclude Include="Server.h" />
+    <ClInclude Include="UserPacket_generated.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Server.h" />
+    <None Include="UserPacket.fbs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

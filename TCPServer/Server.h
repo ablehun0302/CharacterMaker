@@ -1,7 +1,18 @@
 #pragma once
 
+#include <map>
+#include <string>
+#include <ctime>
 #include <WinSock2.h>
 #pragma comment(lib, "ws2_32")
+
+struct Session
+{
+	SOCKET SocketId;
+	std::string IdToken;
+	std::time_t ConnectedAt;
+	std::time_t TokenExpiresIn;
+};
 
 class Server
 {
@@ -10,6 +21,8 @@ public:
 	~Server();
 
 private:
+	std::map<std::string, Session> SessionList;
+
 	WSAData wsaData;
 	SOCKET ListenSock;
 	const u_short ServerPort = 34567;

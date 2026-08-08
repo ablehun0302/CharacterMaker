@@ -1,5 +1,0 @@
-table Test {
-	str:string;
-}
-
-root_type Test;

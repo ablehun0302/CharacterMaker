@@ -1,6 +1,8 @@
 #include "Server.h"
 #include <iostream>
 #include <WinSock2.h>
+#include "flatbuffers/flatbuffers.h"
+#include "UserPacket_generated.h"
 
 #pragma comment(lib, "ws2_32")
 
@@ -121,6 +123,7 @@ void Server::DisconnectClient(SOCKET& ClientSock)
 bool Server::RecvFromClient(SOCKET& ClientSock, char* RecvBuffer)
 {
 	int Result = recv(ClientSock, RecvBuffer, 256, MSG_WAITALL);
+	
 	if (Result <= 0)
 	{
 		DisconnectClient(ClientSock);
