@@ -1,5 +1,6 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
+using System.IO;
 using UnrealBuildTool;
 
 public class CharacterMaker : ModuleRules
@@ -8,11 +9,12 @@ public class CharacterMaker : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Niagara", "HTTP", "Json"});
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Niagara", "HTTP", "Json", "Sockets", "Networking" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
-		//PublicIncludePaths.AddRange(new string[]{ "Base" });
+		string IncludePath = Path.Combine(ModuleDirectory, "..", "ThirdParty");
+		PublicIncludePaths.Add(IncludePath);
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

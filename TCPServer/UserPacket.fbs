@@ -1,9 +1,7 @@
 namespace UserPacket;
 
 table C2S_Login{
-	socket_id : uint8;
 	id_token : string;
-	connected_at : int64;
 	token_expires_in : int64;
 }
 

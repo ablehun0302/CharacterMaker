@@ -1,4 +1,5 @@
 #pragma once
+#define NOMINMAX
 
 #include <map>
 #include <string>
@@ -37,9 +38,10 @@ public:
 private:
 	int InitListenSock();
 	void FindChangedInReadSet();
-	void AcceptClient();
-	void DisconnectClient(SOCKET& ClientSock);
-	bool RecvFromClient(SOCKET& ClientSock, char* RecvBuffer);
-	void SendToClient(SOCKET& ClientSock, const char* Buffer);
+	void Accept();
+	void Disconnect(SOCKET& ClientSock);
+	bool RecvAll(SOCKET& ClientSock, char* OutBuffer);
+	void SendAll(SOCKET& ClientSock, const char* Buffer);
+	void ProcessPacket(const char* InBuffer);
 };
 

@@ -47,6 +47,6 @@ void ALoginPC::CallSuccessSignIn()
 {
 	if (IsLocalPlayerController())
 	{
-		UGameplayStatics::OpenLevel(this, TEXT("Title"));
+		//UGameplayStatics::OpenLevel(this, TEXT("Title"));
 	}
 }

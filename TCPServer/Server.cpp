@@ -1,6 +1,5 @@
 #include "Server.h"
 #include <iostream>
-#include <WinSock2.h>
 #include "flatbuffers/flatbuffers.h"
 #include "UserPacket_generated.h"
 
@@ -78,22 +77,22 @@ void Server::FindChangedInReadSet()
 		{
 			if (ReadSet.fd_array[i] == ListenSock) // 리슨 소켓 = 클라이언트 받기
 			{
-				AcceptClient();
+				Accept();
 			}
 			else // 클라이언트 소켓 = 신호 받고 답장
 			{
-				char RecvBuffer[256] = { 0, };
-				bool IsSuccessRecv = RecvFromClient(ReadSet.fd_array[i], RecvBuffer);
+				char RecvBuffer[65535] = { 0, };
+				bool IsSuccessRecv = RecvAll(ReadSet.fd_array[i], RecvBuffer);
 				if (IsSuccessRecv)
 				{
-					SendToClient(ReadSet.fd_array[i], RecvBuffer);
+					ProcessPacket(RecvBuffer);
 				}
 			}
 		}
 	}
 }
 
-void Server::AcceptClient()
+void Server::Accept()
 {
 	SOCKET ClientSock = NULL;
 	SOCKADDR_IN ClientSockAddr;
@@ -112,7 +111,7 @@ void Server::AcceptClient()
 	}
 }
 
-void Server::DisconnectClient(SOCKET& ClientSock)
+void Server::Disconnect(SOCKET& ClientSock)
 {
 	std::cout << "disconnect: " << ClientSock << std::endl;
 	SOCKET ClosedSocket = ClientSock;
@@ -120,26 +119,59 @@ void Server::DisconnectClient(SOCKET& ClientSock)
 	closesocket(ClosedSocket);
 }
 
-bool Server::RecvFromClient(SOCKET& ClientSock, char* RecvBuffer)
+bool Server::RecvAll(SOCKET& ClientSock, char* OutBuffer)
 {
-	int Result = recv(ClientSock, RecvBuffer, 256, MSG_WAITALL);
-	
+	u_short BodyLength = 0;
+
+	int Result = recv(ClientSock, (char*)&BodyLength, sizeof(BodyLength), MSG_WAITALL);
 	if (Result <= 0)
 	{
-		DisconnectClient(ClientSock);
+		std::cout << "BodyLength Recv Fail: " << Result << std::endl;
+		Disconnect(ClientSock);
 		return false;
 	}
-	std::cout << "Client: " << RecvBuffer << std::endl;
+
+	//std::cout << "BodyLength: " << BodyLength << std::endl;
+	//std::cout << "BodyLength: " << ntohs(BodyLength) << std::endl;
+
+	Result = recv(ClientSock, OutBuffer, ntohs(BodyLength), MSG_WAITALL);
+	if (Result <= 0)
+	{
+		std::cout << "Body Recv Fail: " << Result << std::endl;
+		Disconnect(ClientSock);
+		return false;
+	}
+	
 	return true;
 }
 
-void Server::SendToClient(SOCKET& ClientSock, const char* Buffer)
+void Server::SendAll(SOCKET& ClientSock, const char* Buffer)
 {
 	int Result = send(ClientSock, Buffer, 256, 0);
 	if (Result <= 0)
 	{
-		DisconnectClient(ClientSock);
+		Disconnect(ClientSock);
 		return;
 	}
 	std::cout << "Server: " << Buffer << std::endl;
+}
+
+void Server::ProcessPacket(const char* InBuffer)
+{
+	auto PacketData = UserPacket::GetPacketData(InBuffer);
+
+	switch (PacketData->data_type())
+	{
+		case UserPacket::PacketType_C2S_Login:
+		{
+			auto C2SLoginData = PacketData->data_as_C2S_Login();
+
+			std::cout << "   IdToken: " << C2SLoginData->id_token()->c_str() << std::endl;
+			std::cout << "   Token Expires In: " << C2SLoginData->token_expires_in() << std::endl;
+
+			break;
+		}
+		default:
+			break;
+	}
 }

@@ -3,6 +3,7 @@
 
 #include "AuthSubsystem.h"
 #include "Kismet/GameplayStatics.h"
+#include "TCPClientSubsystem.h"
 
 const FString& UAuthSubsystem::GetIdToken()
 {
@@ -100,6 +101,20 @@ void UAuthSubsystem::CallSignUpNewUser(FHttpRequestPtr Request, FHttpResponsePtr
 
 void UAuthSubsystem::CallVerifyPassword(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bProcessedSuccessfully)
 {
+	// 로그인 전에 TCP 서버 연결
+	UTCPClientSubsystem* TCPSystem = GetGameInstance()->GetSubsystem<UTCPClientSubsystem>();
+	if (TCPSystem && !TCPSystem->IsConnected())
+	{
+		TCPSystem->ConnectServer(TEXT("127.0.0.1"), 34567);
+	}
+
+	// TCP 서버 연결 없음
+	if (!TCPSystem->IsConnected())
+	{
+		OnFailVerifyPW.Broadcast(TEXT("서버 통신 오류"));
+		return;
+	}
+	
 	// 통신 실패
 	if (!bProcessedSuccessfully || !Response.IsValid())
 	{
@@ -133,6 +148,8 @@ void UAuthSubsystem::CallVerifyPassword(FHttpRequestPtr Request, FHttpResponsePt
 	JsonObject->TryGetStringField(TEXT("refreshToken"), RefreshToken);
 	JsonObject->TryGetStringField(TEXT("localId"), UID);
 	JsonObject->TryGetStringField(TEXT("expiresIn"), ExpiresIn);
+
+	TCPSystem->SendLogin(IdToken, ExpiresIn);
 	UE_LOG(LogTemp, Display, TEXT("---Firebase Response---\n%s"), *ResponseStr);
 
 	OnSuccessVerifyPW.Broadcast();
