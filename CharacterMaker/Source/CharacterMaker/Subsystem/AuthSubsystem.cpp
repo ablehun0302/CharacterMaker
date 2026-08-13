@@ -149,7 +149,7 @@ void UAuthSubsystem::CallVerifyPassword(FHttpRequestPtr Request, FHttpResponsePt
 	JsonObject->TryGetStringField(TEXT("localId"), UID);
 	JsonObject->TryGetStringField(TEXT("expiresIn"), ExpiresIn);
 
-	TCPSystem->SendLogin(IdToken, ExpiresIn);
+	TCPSystem->SendLogin(UID);
 	UE_LOG(LogTemp, Display, TEXT("---Firebase Response---\n%s"), *ResponseStr);
 
 	OnSuccessVerifyPW.Broadcast();

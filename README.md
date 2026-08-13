@@ -61,12 +61,6 @@
     - AuthSubsystem에서 Firebase 로그인 데이터를 받고 TCPClientSubsystem에서 로그인 패킷을 서버에 전송.
 - 클라이언트->서버에 보낼 데이터
     - UID
-    - IdToken
-    - 토큰 유효기간(1시간)
 - 서버에서 세션을 관리하기 위해 세션 map 변수 생성
     - Key: UID
-    - Value
-        - Socket
-        - 접속시간
-        - IdToken
-        - 토큰 유효기간
+    - Value: Socket

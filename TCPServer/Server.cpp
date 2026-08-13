@@ -1,5 +1,6 @@
 #include "Server.h"
 #include <iostream>
+#include <vector>
 #include "flatbuffers/flatbuffers.h"
 #include "UserPacket_generated.h"
 
@@ -85,7 +86,7 @@ void Server::FindChangedInReadSet()
 				bool IsSuccessRecv = RecvAll(ReadSet.fd_array[i], RecvBuffer);
 				if (IsSuccessRecv)
 				{
-					ProcessPacket(RecvBuffer);
+					ProcessPacket(ReadSet.fd_array[i], RecvBuffer);
 				}
 			}
 		}
@@ -145,18 +146,32 @@ bool Server::RecvAll(SOCKET& ClientSock, char* OutBuffer)
 	return true;
 }
 
-void Server::SendAll(SOCKET& ClientSock, const char* Buffer)
+void Server::SendAll(SOCKET& ClientSock, const uint8_t* Buffer, uint32_t DataSize)
 {
-	int Result = send(ClientSock, Buffer, 256, 0);
-	if (Result <= 0)
+	// 헤더 + 데이터 보내기
+	std::vector<char> Packet;
+	size_t PacketSize = 2 + (size_t)DataSize;
+	Packet.resize(PacketSize);
+	// 헤더
+	u_short NetDataSize = htons((u_short)DataSize);
+	memcpy(Packet.data(), &NetDataSize, sizeof(NetDataSize));
+	// 데이터
+	memcpy(Packet.data() + 2, Buffer, (size_t)DataSize);
+
+	int TotalSentBytes = 0;
+	do
 	{
-		Disconnect(ClientSock);
-		return;
-	}
-	std::cout << "Server: " << Buffer << std::endl;
+		int SentBytes = send(ClientSock, Packet.data() + TotalSentBytes, PacketSize - TotalSentBytes, 0);
+		TotalSentBytes += SentBytes;
+
+		if (SentBytes <= 0)
+		{
+			std::cout << "Send Fail: " << SentBytes << std::endl;
+		}
+	} while (TotalSentBytes < PacketSize);
 }
 
-void Server::ProcessPacket(const char* InBuffer)
+void Server::ProcessPacket(SOCKET& ClientSock, const char* InBuffer)
 {
 	auto PacketData = UserPacket::GetPacketData(InBuffer);
 
@@ -164,10 +179,37 @@ void Server::ProcessPacket(const char* InBuffer)
 	{
 		case UserPacket::PacketType_C2S_Login:
 		{
+			// Login Data 가져오기
 			auto C2SLoginData = PacketData->data_as_C2S_Login();
+			std::string UID = C2SLoginData->uid()->c_str();
+			std::cout << "   UID: " << UID << std::endl;
 
-			std::cout << "   IdToken: " << C2SLoginData->id_token()->c_str() << std::endl;
-			std::cout << "   Token Expires In: " << C2SLoginData->token_expires_in() << std::endl;
+			// 세션 맵에 UID 키가 없다면 넣고 아님말고
+			Session NewSession = { ClientSock };
+			auto InsertResult = SessionList.insert({ UID, NewSession });
+
+			// 결과에 맞는 데이터 보내기 Server -> Client
+			if (InsertResult.second)
+			{
+				std::cout << "New session" << std::endl;
+				flatbuffers::FlatBufferBuilder Builder;
+
+				auto S2C_LoginData = UserPacket::CreateS2C_Login
+				(
+					Builder, true
+				);
+				auto PacketData = UserPacket::CreatePacketData
+				(
+					Builder, UserPacket::PacketType_S2C_Login, S2C_LoginData.Union()
+				);
+
+				Builder.Finish(PacketData);
+				SendAll(ClientSock, Builder.GetBufferPointer(), Builder.GetSize());
+			}
+			else
+			{
+				std::cout << "Duplicated session" << std::endl;
+			}
 
 			break;
 		}

@@ -4,28 +4,37 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "Tickable.h"
 #include "TCPClientSubsystem.generated.h"
 
 class FSocket;
+class FTCPRecvWorker;
+class FRunnableThread;
 /**
  * 
  */
 UCLASS()
-class CHARACTERMAKER_API UTCPClientSubsystem : public UGameInstanceSubsystem
+class CHARACTERMAKER_API UTCPClientSubsystem : public UGameInstanceSubsystem , public FTickableGameObject
 {
 	GENERATED_BODY()
 protected:
 	virtual void Deinitialize() override;
+	virtual void Tick(float DeltaTime) override;
+	virtual TStatId GetStatId() const override;
 
 private:
 	FSocket* ServerSocket;
+
+	FTCPRecvWorker* RecvWorker;
+	FRunnableThread* RecvThread;
+	TQueue<TArray<uint8>> RecvQueue;	// 수신한 데이터 -> 순차적 처리
 
 public:
 	void ConnectServer(const FString& Host, const int32 Port);
 	void Disconnect();
 	bool IsConnected();
 
-	void SendLogin(const FString& InIdToken, const FString& InExpiresIn);
+	void SendLogin(const FString& InUID);
 
 private:
 	bool SendAll(const uint8* InBody, uint32 InBodyLength);

@@ -2,15 +2,29 @@
 
 
 #include "TCPClientSubsystem.h"
+#include "TCP/TCPRecvWorker.h"
+
 #include "SocketSubsystem.h"
 #include "Sockets.h"
 #include "IPAddress.h"
 #include "Interfaces/IPv4/IPv4Address.h"
+#include "HAL/RunnableThread.h"
+
 #include "ThirdParty/UserPacket_generated.h"
 
 void UTCPClientSubsystem::Deinitialize()
 {
 	Disconnect();
+}
+
+void UTCPClientSubsystem::Tick(float DeltaTime)
+{
+	
+}
+
+TStatId UTCPClientSubsystem::GetStatId() const
+{
+	RETURN_QUICK_DECLARE_CYCLE_STAT(UTCPClientSubsystem, STATGROUP_Tickables);
 }
 
 void UTCPClientSubsystem::ConnectServer(const FString& Host, const int32 Port)
@@ -30,12 +44,24 @@ void UTCPClientSubsystem::ConnectServer(const FString& Host, const int32 Port)
 	}
 
 	ServerSocket->SetNonBlocking(false);
-
 	UE_LOG(LogTemp, Display, TEXT("TCP Connect!!"));
+
+	RecvWorker = new FTCPRecvWorker(ServerSocket, RecvQueue);
+	RecvThread = FRunnableThread::Create(RecvWorker, TEXT("TCPRecvWorker"));
 }
 
 void UTCPClientSubsystem::Disconnect()
 {
+	if (RecvThread)
+	{
+		RecvThread->Kill();
+		delete RecvThread;
+		RecvThread = nullptr;
+
+	}
+	delete RecvWorker;
+	RecvWorker = nullptr;
+	
 	if (ServerSocket)
 	{
 		ISocketSubsystem* SocketSystem = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
@@ -44,7 +70,7 @@ void UTCPClientSubsystem::Disconnect()
 		SocketSystem->DestroySocket(ServerSocket);
 		ServerSocket = nullptr;
 	}
-	
+
 }
 
 bool UTCPClientSubsystem::IsConnected()
@@ -52,16 +78,15 @@ bool UTCPClientSubsystem::IsConnected()
 	return ServerSocket != nullptr && ServerSocket->GetConnectionState() == SCS_Connected;
 }
 
-void UTCPClientSubsystem::SendLogin(const FString& InIdToken, const FString& InExpiresIn)
+void UTCPClientSubsystem::SendLogin(const FString& InUID)
 {
 	flatbuffers::FlatBufferBuilder Builder;
 
-	FTCHARToUTF8 IdToken(*InIdToken);
-	int64_t ExpiresIn = FCString::Atoi64(*InExpiresIn);
+	FTCHARToUTF8 UID(*InUID);
 
 	auto C2S_LoginData = UserPacket::CreateC2S_LoginDirect
 	(
-		Builder, IdToken.Get(), ExpiresIn
+		Builder, UID.Get()
 	);
 	auto PacketData = UserPacket::CreatePacketData
 	(

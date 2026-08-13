@@ -1,8 +1,7 @@
 namespace UserPacket;
 
 table C2S_Login{
-	id_token : string;
-	token_expires_in : int64;
+	uid : string;
 }
 
 table S2C_Login{

@@ -10,9 +10,6 @@
 struct Session
 {
 	SOCKET SocketId;
-	std::string IdToken;
-	std::time_t ConnectedAt;
-	std::time_t TokenExpiresIn;
 };
 
 class Server
@@ -41,7 +38,8 @@ private:
 	void Accept();
 	void Disconnect(SOCKET& ClientSock);
 	bool RecvAll(SOCKET& ClientSock, char* OutBuffer);
-	void SendAll(SOCKET& ClientSock, const char* Buffer);
-	void ProcessPacket(const char* InBuffer);
+	
+	void SendAll(SOCKET& ClientSock, const uint8_t* Buffer, uint32_t DataSize);
+	void ProcessPacket(SOCKET& ClientSock, const char* InBuffer);
 };
 

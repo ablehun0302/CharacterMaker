@@ -77,21 +77,16 @@ bool VerifyPacketTypeVector(::flatbuffers::VerifierTemplate<B> &verifier, const 
 struct C2S_Login FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef C2S_LoginBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
-    VT_ID_TOKEN = 4,
-    VT_TOKEN_EXPIRES_IN = 6
+    VT_UID = 4
   };
-  const ::flatbuffers::String *id_token() const {
-    return GetPointer<const ::flatbuffers::String *>(VT_ID_TOKEN);
-  }
-  int64_t token_expires_in() const {
-    return GetField<int64_t>(VT_TOKEN_EXPIRES_IN, 0);
+  const ::flatbuffers::String *uid() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_UID);
   }
   template <bool B = false>
   bool Verify(::flatbuffers::VerifierTemplate<B> &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyOffset(verifier, VT_ID_TOKEN) &&
-           verifier.VerifyString(id_token()) &&
-           VerifyField<int64_t>(verifier, VT_TOKEN_EXPIRES_IN, 8) &&
+           VerifyOffset(verifier, VT_UID) &&
+           verifier.VerifyString(uid()) &&
            verifier.EndTable();
   }
 };
@@ -100,11 +95,8 @@ struct C2S_LoginBuilder {
   typedef C2S_Login Table;
   ::flatbuffers::FlatBufferBuilder &fbb_;
   ::flatbuffers::uoffset_t start_;
-  void add_id_token(::flatbuffers::Offset<::flatbuffers::String> id_token) {
-    fbb_.AddOffset(C2S_Login::VT_ID_TOKEN, id_token);
-  }
-  void add_token_expires_in(int64_t token_expires_in) {
-    fbb_.AddElement<int64_t>(C2S_Login::VT_TOKEN_EXPIRES_IN, token_expires_in, 0);
+  void add_uid(::flatbuffers::Offset<::flatbuffers::String> uid) {
+    fbb_.AddOffset(C2S_Login::VT_UID, uid);
   }
   explicit C2S_LoginBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -119,23 +111,19 @@ struct C2S_LoginBuilder {
 
 inline ::flatbuffers::Offset<C2S_Login> CreateC2S_Login(
     ::flatbuffers::FlatBufferBuilder &_fbb,
-    ::flatbuffers::Offset<::flatbuffers::String> id_token = 0,
-    int64_t token_expires_in = 0) {
+    ::flatbuffers::Offset<::flatbuffers::String> uid = 0) {
   C2S_LoginBuilder builder_(_fbb);
-  builder_.add_token_expires_in(token_expires_in);
-  builder_.add_id_token(id_token);
+  builder_.add_uid(uid);
   return builder_.Finish();
 }
 
 inline ::flatbuffers::Offset<C2S_Login> CreateC2S_LoginDirect(
     ::flatbuffers::FlatBufferBuilder &_fbb,
-    const char *id_token = nullptr,
-    int64_t token_expires_in = 0) {
-  auto id_token__ = id_token ? _fbb.CreateString(id_token) : 0;
+    const char *uid = nullptr) {
+  auto uid__ = uid ? _fbb.CreateString(uid) : 0;
   return UserPacket::CreateC2S_Login(
       _fbb,
-      id_token__,
-      token_expires_in);
+      uid__);
 }
 
 struct S2C_Login FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
