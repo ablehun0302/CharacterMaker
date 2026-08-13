@@ -28,6 +28,7 @@ private:
 	FTCPRecvWorker* RecvWorker;
 	FRunnableThread* RecvThread;
 	TQueue<TArray<uint8>> RecvQueue;	// 수신한 데이터 -> 순차적 처리
+	TArray<uint8> RecvBuffer;
 
 public:
 	void ConnectServer(const FString& Host, const int32 Port);
@@ -38,4 +39,5 @@ public:
 
 private:
 	bool SendAll(const uint8* InBody, uint32 InBodyLength);
+	void DispatchPacket();
 };

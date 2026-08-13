@@ -74,12 +74,6 @@ uint32 FTCPRecvWorker::Run()
 			continue;
 		}
 
-		// Test Log
-		auto Data = UserPacket::GetPacketData(RecvBuffer.GetData());
-		if (Data->data_as_S2C_Login()->is_success())
-			UE_LOG(LogTemp, Display, TEXT("Recv Success"));
-		//
-
 		RecvQueue.Enqueue(MoveTemp(RecvBuffer));
 	}
 	return uint32();

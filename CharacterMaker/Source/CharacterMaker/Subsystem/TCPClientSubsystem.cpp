@@ -19,7 +19,18 @@ void UTCPClientSubsystem::Deinitialize()
 
 void UTCPClientSubsystem::Tick(float DeltaTime)
 {
-	
+	if (!RecvWorker)
+	{
+		return;
+	}
+
+	if (!RecvQueue.IsEmpty())
+	{
+		RecvBuffer.Empty();
+		RecvQueue.Dequeue(RecvBuffer);
+
+		DispatchPacket();
+	}
 }
 
 TStatId UTCPClientSubsystem::GetStatId() const
@@ -127,4 +138,22 @@ bool UTCPClientSubsystem::SendAll(const uint8* InBody, uint32 InBodyLength)
 
 	UE_LOG(LogTemp, Display, TEXT("SendAll Complete: %d byte"), TotalSentBytes);
 	return true;
+}
+
+void UTCPClientSubsystem::DispatchPacket()
+{
+	auto PacketData = UserPacket::GetPacketData(RecvBuffer.GetData());
+
+	switch (PacketData->data_type())	
+	{
+		case UserPacket::PacketType_S2C_Login :
+		{
+			auto S2CLoginData = PacketData->data_as_S2C_Login();
+
+			UE_LOG(LogTemp, Display, TEXT("Login Result: %d"), S2CLoginData->is_success());
+			break;
+		}
+	default:
+		break;
+	}
 }

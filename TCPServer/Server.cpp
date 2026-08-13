@@ -192,24 +192,24 @@ void Server::ProcessPacket(SOCKET& ClientSock, const char* InBuffer)
 			if (InsertResult.second)
 			{
 				std::cout << "New session" << std::endl;
-				flatbuffers::FlatBufferBuilder Builder;
-
-				auto S2C_LoginData = UserPacket::CreateS2C_Login
-				(
-					Builder, true
-				);
-				auto PacketData = UserPacket::CreatePacketData
-				(
-					Builder, UserPacket::PacketType_S2C_Login, S2C_LoginData.Union()
-				);
-
-				Builder.Finish(PacketData);
-				SendAll(ClientSock, Builder.GetBufferPointer(), Builder.GetSize());
 			}
 			else
 			{
 				std::cout << "Duplicated session" << std::endl;
 			}
+			flatbuffers::FlatBufferBuilder Builder;
+
+			auto S2C_LoginData = UserPacket::CreateS2C_Login
+			(
+				Builder, InsertResult.second
+			);
+			auto PacketData = UserPacket::CreatePacketData
+			(
+				Builder, UserPacket::PacketType_S2C_Login, S2C_LoginData.Union()
+			);
+
+			Builder.Finish(PacketData);
+			SendAll(ClientSock, Builder.GetBufferPointer(), Builder.GetSize());
 
 			break;
 		}
