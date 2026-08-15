@@ -7,7 +7,13 @@
 
 void UAuthSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
-	TCPSystem = GetGameInstance()->GetSubsystem<UTCPClientSubsystem>();
+	Super::Initialize(Collection);
+
+	TCPSystem = Collection.InitializeDependency<UTCPClientSubsystem>();
+	if (!TCPSystem)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("TCPSystem 없음"));
+	}
 }
 
 const FString& UAuthSubsystem::GetIdToken()

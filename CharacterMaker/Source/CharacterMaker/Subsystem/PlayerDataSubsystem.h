@@ -8,6 +8,8 @@
 #include "Http.h"
 #include "PlayerDataSubsystem.generated.h"
 
+class UAuthSubsystem;
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSuccessUpdateNickname, const FString&, Nickname);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFailUpdateNickname, const FString&, ErrorMessage);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSuccessGetNickname, const FString&, Nickname);
@@ -18,6 +20,9 @@ UCLASS()
 class CHARACTERMAKER_API UPlayerDataSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
+protected:
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+
 public:
 	UPROPERTY(BlueprintAssignable, Category = "Event")
 	FOnSuccessUpdateNickname OnSuccessUpdateNickname;
@@ -32,6 +37,8 @@ public:
 	const FString& GetNicknameVar() const;
 
 private:
+	UAuthSubsystem* AuthSystem;
+
 	FString Nickname;
 
 public:

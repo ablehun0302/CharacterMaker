@@ -4,6 +4,18 @@
 #include "PlayerDataSubsystem.h"
 #include "AuthSubsystem.h"
 
+void UPlayerDataSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+
+	//AuthSubsystem 가져오기
+	AuthSystem = Collection.InitializeDependency<UAuthSubsystem>();
+	if (!AuthSystem)
+	{
+		return;
+	}
+}
+
 const FString& UPlayerDataSubsystem::GetNicknameVar() const
 {
 	return Nickname;
@@ -11,13 +23,6 @@ const FString& UPlayerDataSubsystem::GetNicknameVar() const
 
 void UPlayerDataSubsystem::UpdateNickname(const FString& InNickname)
 {
-	//AuthSubsystem 가져오기
-	UAuthSubsystem* AuthSystem = GetGameInstance()->GetSubsystem<UAuthSubsystem>();
-	if (!AuthSystem)
-	{
-		return;
-	}
-
 	// Request 설정
 	if (AuthSystem->GetUID().IsEmpty())
 	{
@@ -62,13 +67,6 @@ void UPlayerDataSubsystem::UpdateNickname(const FString& InNickname)
 
 void UPlayerDataSubsystem::GetNickname()
 {
-	//AuthSubsystem 가져오기
-	UAuthSubsystem* AuthSystem = GetGameInstance()->GetSubsystem<UAuthSubsystem>();
-	if (!AuthSystem)
-	{
-		return;
-	}
-
 	// Request 설정
 	if (AuthSystem->GetUID().IsEmpty())
 	{
@@ -81,6 +79,7 @@ void UPlayerDataSubsystem::GetNickname()
 	FString URL = FString::Printf(TEXT("https://firestore.asia-northeast3.rep.googleapis.com/v1/projects/rpg-project-c4596/databases/(default)/documents/user_info/%s"), *(AuthSystem->GetUID()));
 	Request->SetURL(URL);
 	Request->SetVerb(TEXT("GET"));
+	Request->SetHeader(TEXT("Authorization"), FString::Printf(TEXT("Bearer %s"), *(AuthSystem->GetIdToken())));
 
 	// 응답 콜백 함수 바인딩
 	Request->OnProcessRequestComplete().BindLambda(
