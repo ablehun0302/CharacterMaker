@@ -45,6 +45,13 @@ void ULoginMainWidget::NativeConstruct()
 	}
 }
 
+void ULoginMainWidget::UpdateInfoText(const FString& InString)
+{
+	Text_Info->SetText(
+		FText::FromString(InString)
+	);
+}
+
 void ULoginMainWidget::ClearAllTextInput()
 {
 	TextBox_Email->SetText(FText::GetEmpty());
@@ -74,29 +81,19 @@ void ULoginMainWidget::OnClickedSignInBtn()
 void ULoginMainWidget::CallSuccessSignUp(const FString& UID)
 {
 	UE_LOG(LogTemp, Display, TEXT("%s"), *UID);
-	Text_Info->SetText(FText::FromString(TEXT("회원가입 완료")));
+	UpdateInfoText(TEXT("회원가입 완료"));
 }
 
 void ULoginMainWidget::CallFailSignUp(const FString& ErrorMsg)
 {
-	Text_Info->SetText(
-		FText::FromString(
-			FString::Printf(TEXT("회원가입 실패: %s"), *ErrorMsg)
-		)
-	);
+	UpdateInfoText(FString::Printf(TEXT("회원가입 실패: %s"), *ErrorMsg));
 
 	ClearAllTextInput();
 }
 
 void ULoginMainWidget::CallFailVerifyPW(const FString& ErrorMsg)
 {
-	UE_LOG(LogTemp, Display, TEXT("FailVerifyPW %s"), *ErrorMsg);
-
-	Text_Info->SetText(
-		FText::FromString(
-			FString::Printf(TEXT("로그인 실패: %s"), *ErrorMsg)
-		)
-	);
+	UpdateInfoText(FString::Printf(TEXT("로그인 실패: %s"), *ErrorMsg));
 
 	ClearAllTextInput();
 }

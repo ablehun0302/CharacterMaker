@@ -12,6 +12,11 @@
 
 #include "ThirdParty/UserPacket_generated.h"
 
+void UTCPClientSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	ConnectServer();
+}
+
 void UTCPClientSubsystem::Deinitialize()
 {
 	Disconnect();
@@ -40,6 +45,12 @@ TStatId UTCPClientSubsystem::GetStatId() const
 
 void UTCPClientSubsystem::ConnectServer(const FString& Host, const int32 Port)
 {
+	if (IsConnected())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Already connected to TCP server"));
+		return;
+	}
+
 	ISocketSubsystem* SocketSystem = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
 
 	FAddressInfoResult AddressInfo = SocketSystem->GetAddressInfo(*Host, nullptr, EAddressInfoFlags::Default, NAME_None);

@@ -42,6 +42,9 @@ private:
 	UTCPClientSubsystem* TCPSystem = nullptr;
 
 private:
+	UFUNCTION()
+	void UpdateInfoText(const FString& InString);
+
 	void ClearAllTextInput();
 
 	UFUNCTION()

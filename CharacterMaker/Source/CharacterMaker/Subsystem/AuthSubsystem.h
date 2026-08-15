@@ -16,6 +16,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFailSignUp, const FString&, Error
 // VerifyPassword
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSuccessVerifyPW);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFailVerifyPW, const FString&, ErrorMessage);
+// IsTCPServerConnected?
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnNotConnectedToTCPServer);
 /**
  * 
  */
@@ -39,6 +41,9 @@ public:	// 콜백 함수 이후 서버->클라이언트 이벤트
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnFailVerifyPW OnFailVerifyPW;
+
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnNotConnectedToTCPServer OnNotConnectedToTCPServer;
 
 	const FString& GetIdToken();
 	const FString& GetRefreshToken();

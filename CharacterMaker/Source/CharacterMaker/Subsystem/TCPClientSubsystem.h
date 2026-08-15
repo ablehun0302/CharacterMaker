@@ -21,6 +21,7 @@ class CHARACTERMAKER_API UTCPClientSubsystem : public UGameInstanceSubsystem , p
 {
 	GENERATED_BODY()
 protected:
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual TStatId GetStatId() const override;
@@ -30,15 +31,15 @@ public:
 	FOnFailLogin OnFailLogin;
 
 private:
-	FSocket* ServerSocket;
+	FSocket* ServerSocket = nullptr;
 
-	FTCPRecvWorker* RecvWorker;
-	FRunnableThread* RecvThread;
+	FTCPRecvWorker* RecvWorker = nullptr;
+	FRunnableThread* RecvThread = nullptr;
 	TQueue<TArray<uint8>> RecvQueue;	// 수신한 데이터 -> 순차적 처리
 	TArray<uint8> RecvBuffer;
 
 public:
-	void ConnectServer(const FString& Host, const int32 Port);
+	void ConnectServer(const FString& Host = TEXT("127.0.0.1"), const int32 Port = 34567);
 	void Disconnect();
 	bool IsConnected();
 

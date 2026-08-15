@@ -25,13 +25,6 @@ void ALoginPC::BeginPlay()
 	SetShowMouseCursor(true);
 
 	// 로그인 성공 콜백 함수 바인딩
-	UGameInstance* GI = GetGameInstance();
-	if (!GI)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("PC: No Game Instance"));
-		return;
-	}
-
 	UTCPClientSubsystem* TCPSystem = GetGameInstance()->GetSubsystem<UTCPClientSubsystem>();
 	if (!TCPSystem)
 	{

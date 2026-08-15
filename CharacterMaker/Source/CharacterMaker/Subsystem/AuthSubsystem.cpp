@@ -33,9 +33,17 @@ const FString& UAuthSubsystem::GetUID()
 
 void UAuthSubsystem::SignUpEmail(const FString& Email, const FString& PW)
 {
-	FHttpRequestPtr Request = FHttpModule::Get().CreateRequest();
+	// TCP 서버 연결 시도
+	TCPSystem->ConnectServer();
+	if (!TCPSystem->IsConnected())
+	{
+		OnNotConnectedToTCPServer.Broadcast();
+		return;
+	}
 
 	// Request 설정
+	FHttpRequestPtr Request = FHttpModule::Get().CreateRequest();
+
 	FString URL = FString::Printf(TEXT("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=%s"), *WebApiKey);
 	Request->SetURL(URL);
 	Request->SetVerb(TEXT("POST"));
@@ -54,9 +62,17 @@ void UAuthSubsystem::SignUpEmail(const FString& Email, const FString& PW)
 
 void UAuthSubsystem::SignInEmail(const FString& Email, const FString& PW)
 {
-	FHttpRequestPtr Request = FHttpModule::Get().CreateRequest();
+	// TCP 서버 연결 시도
+	TCPSystem->ConnectServer();
+	if (!TCPSystem->IsConnected())
+	{
+		OnNotConnectedToTCPServer.Broadcast();
+		return;
+	}
 
 	// Request 설정
+	FHttpRequestPtr Request = FHttpModule::Get().CreateRequest();
+
 	FString URL = FString::Printf(TEXT("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=%s"), *WebApiKey);
 	Request->SetURL(URL);
 	Request->SetVerb(TEXT("POST"));
@@ -111,20 +127,7 @@ void UAuthSubsystem::CallSignUpNewUser(FHttpRequestPtr Request, FHttpResponsePtr
 }
 
 void UAuthSubsystem::CallVerifyPassword(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bProcessedSuccessfully)
-{
-	// 로그인 전에 TCP 서버 연결
-	if (TCPSystem && !TCPSystem->IsConnected())
-	{
-		TCPSystem->ConnectServer(TEXT("127.0.0.1"), 34567);
-	}
-
-	// TCP 서버 연결 없음
-	if (!TCPSystem->IsConnected())
-	{
-		OnFailVerifyPW.Broadcast(TEXT("서버 통신 오류"));
-		return;
-	}
-	
+{	
 	// 통신 실패
 	if (!bProcessedSuccessfully || !Response.IsValid())
 	{
