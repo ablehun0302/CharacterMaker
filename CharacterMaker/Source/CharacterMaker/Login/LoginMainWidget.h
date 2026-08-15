@@ -10,6 +10,7 @@ class UEditableTextBox;
 class UButton;
 class UTextBlock;
 class UAuthSubsystem;
+class UTCPClientSubsystem;
 
 /**
  * 
@@ -38,6 +39,7 @@ public:
 
 private:
 	UAuthSubsystem* AuthSystem = nullptr;
+	UTCPClientSubsystem* TCPSystem = nullptr;
 
 private:
 	void ClearAllTextInput();

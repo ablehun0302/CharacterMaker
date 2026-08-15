@@ -8,6 +8,8 @@
 #include "Http.h"
 #include "AuthSubsystem.generated.h"
 
+class UTCPClientSubsystem;
+
 // SignupNewUser
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSuccessSignUp, const FString&, UID);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFailSignUp, const FString&, ErrorMessage);
@@ -21,6 +23,9 @@ UCLASS()
 class CHARACTERMAKER_API UAuthSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
+
+protected:
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
 public:	// 콜백 함수 이후 서버->클라이언트 이벤트
 	UPROPERTY(BlueprintAssignable, Category = "Events")
@@ -40,6 +45,8 @@ public:	// 콜백 함수 이후 서버->클라이언트 이벤트
 	const FString& GetUID();
 
 private:
+	UTCPClientSubsystem* TCPSystem = nullptr;
+
 	const FString WebApiKey = TEXT("AIzaSyBHV9I9Yd2SIBnPIY2pkUk8vS_EnDCmhLQ");
 
 	FString IdToken;

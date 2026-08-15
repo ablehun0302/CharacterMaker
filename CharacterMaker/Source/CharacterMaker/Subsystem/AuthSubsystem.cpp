@@ -5,6 +5,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "TCPClientSubsystem.h"
 
+void UAuthSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	TCPSystem = GetGameInstance()->GetSubsystem<UTCPClientSubsystem>();
+}
+
 const FString& UAuthSubsystem::GetIdToken()
 {
 	return IdToken;
@@ -102,7 +107,6 @@ void UAuthSubsystem::CallSignUpNewUser(FHttpRequestPtr Request, FHttpResponsePtr
 void UAuthSubsystem::CallVerifyPassword(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bProcessedSuccessfully)
 {
 	// 로그인 전에 TCP 서버 연결
-	UTCPClientSubsystem* TCPSystem = GetGameInstance()->GetSubsystem<UTCPClientSubsystem>();
 	if (TCPSystem && !TCPSystem->IsConnected())
 	{
 		TCPSystem->ConnectServer(TEXT("127.0.0.1"), 34567);
@@ -151,6 +155,4 @@ void UAuthSubsystem::CallVerifyPassword(FHttpRequestPtr Request, FHttpResponsePt
 
 	TCPSystem->SendLogin(UID);
 	UE_LOG(LogTemp, Display, TEXT("---Firebase Response---\n%s"), *ResponseStr);
-
-	OnSuccessVerifyPW.Broadcast();
 }

@@ -10,6 +10,9 @@
 class FSocket;
 class FTCPRecvWorker;
 class FRunnableThread;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSuccessLogin);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFailLogin, const FString&, ErrorMsg);
 /**
  * 
  */
@@ -21,6 +24,10 @@ protected:
 	virtual void Deinitialize() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual TStatId GetStatId() const override;
+
+public:
+	FOnSuccessLogin OnSuccessLogin;
+	FOnFailLogin OnFailLogin;
 
 private:
 	FSocket* ServerSocket;

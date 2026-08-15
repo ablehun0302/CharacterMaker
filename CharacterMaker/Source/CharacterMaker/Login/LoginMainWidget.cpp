@@ -3,6 +3,7 @@
 
 #include "LoginMainWidget.h"
 #include "../Subsystem/AuthSubsystem.h"
+#include "../Subsystem/TCPClientSubsystem.h"
 
 #include "Components/EditableTextBox.h"
 #include "Components/Button.h"
@@ -23,7 +24,12 @@ void ULoginMainWidget::NativeConstruct()
 	if (!AuthSystem)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("AuthSubsystem 없음"));
-		return;
+	}
+
+	TCPSystem = GameInstance->GetSubsystem<UTCPClientSubsystem>();
+	if (!TCPSystem)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("TCPClientSubsystem 없음"));
 	}
 
 	// 버튼 클릭 이벤트
@@ -57,9 +63,9 @@ void ULoginMainWidget::OnClickedSignUpBtn()
 
 void ULoginMainWidget::OnClickedSignInBtn()
 {
-	//AuthSystem->OnSuccessVerifyPW.RemoveAll(this);
+	TCPSystem->OnFailLogin.RemoveAll(this);
 	AuthSystem->OnFailVerifyPW.RemoveAll(this);
-	//AuthSystem->OnSuccessVerifyPW.AddDynamic(this, &ULoginMainWidget::CallSuccessVerifyPW);
+	TCPSystem->OnFailLogin.AddDynamic(this, &ULoginMainWidget::CallFailVerifyPW);
 	AuthSystem->OnFailVerifyPW.AddDynamic(this, &ULoginMainWidget::CallFailVerifyPW);
 
 	AuthSystem->SignInEmail(TextBox_Email->GetText().ToString(), TextBox_PW->GetText().ToString());

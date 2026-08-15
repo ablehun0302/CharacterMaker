@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+Ôªø// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "TCPClientSubsystem.h"
@@ -115,12 +115,12 @@ bool UTCPClientSubsystem::SendAll(const uint8* InBody, uint32 InBodyLength)
 {
 	TArray<uint8> Packet;
 
-	// «Ï¥ı = ±Ê¿Ã 2πŸ¿Ã∆Æ + µ•¿Ã≈Õ
+	// Ìó§Îçî = Í∏∏Ïù¥ 2Î∞îÏù¥Ìä∏ + Îç∞Ïù¥ÌÑ∞
 	Packet.Reserve(2 + InBodyLength);
-	// ±Ê¿Ã
+	// Í∏∏Ïù¥
 	Packet.Add((uint8)((InBodyLength >> 8) & 0xFF));
 	Packet.Add((uint8) (InBodyLength & 0xFF));
-	// µ•¿Ã≈Õ
+	// Îç∞Ïù¥ÌÑ∞
 	Packet.Append(InBody, InBodyLength);
 
 	int TotalSentBytes = 0;
@@ -151,6 +151,14 @@ void UTCPClientSubsystem::DispatchPacket()
 			auto S2CLoginData = PacketData->data_as_S2C_Login();
 
 			UE_LOG(LogTemp, Display, TEXT("Login Result: %d"), S2CLoginData->is_success());
+			if (S2CLoginData->is_success())
+			{
+				OnSuccessLogin.Broadcast();
+			}
+			else
+			{
+				OnFailLogin.Broadcast(TEXT("Ï§ëÎ≥µ Î°úÍ∑∏Ïù∏"));
+			}
 			break;
 		}
 	default:

@@ -3,7 +3,7 @@
 
 #include "LoginPC.h"
 #include "LoginMainWidget.h"
-#include "../Subsystem/AuthSubsystem.h"
+#include "../Subsystem/TCPClientSubsystem.h"
 
 #include "Kismet/GameplayStatics.h"
 
@@ -28,25 +28,25 @@ void ALoginPC::BeginPlay()
 	UGameInstance* GI = GetGameInstance();
 	if (!GI)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("GM: No Game Instance"));
+		UE_LOG(LogTemp, Warning, TEXT("PC: No Game Instance"));
 		return;
 	}
 
-	UAuthSubsystem* AuthSystem = GetGameInstance()->GetSubsystem<UAuthSubsystem>();
-	if (!AuthSystem)
+	UTCPClientSubsystem* TCPSystem = GetGameInstance()->GetSubsystem<UTCPClientSubsystem>();
+	if (!TCPSystem)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("GM: No Auth system"));
+		UE_LOG(LogTemp, Warning, TEXT("PC: No TCP system"));
 		return;
 	}
 
-	AuthSystem->OnSuccessVerifyPW.RemoveAll(this);
-	AuthSystem->OnSuccessVerifyPW.AddDynamic(this, &ALoginPC::CallSuccessSignIn);
+	TCPSystem->OnSuccessLogin.RemoveAll(this);
+	TCPSystem->OnSuccessLogin.AddDynamic(this, &ALoginPC::CallSuccessSignIn);
 }
 
 void ALoginPC::CallSuccessSignIn()
 {
 	if (IsLocalPlayerController())
 	{
-		//UGameplayStatics::OpenLevel(this, TEXT("Title"));
+		UGameplayStatics::OpenLevel(this, TEXT("Title"));
 	}
 }
